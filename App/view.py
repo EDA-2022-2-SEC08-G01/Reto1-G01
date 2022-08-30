@@ -34,13 +34,36 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
+
+def newController():
+    control = controller.newController()
+    return control
+
+    
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- Listar películas estrenadas en un periodo de tiempo")
+    print("3- Listar programas de televisión agregados en un periodo de tiempo")
+    print("4- Consultar contenido donde participa un actor")
+    print("5- Consultar contenido por un género específico")
+    print("6- Consultar contenido producido en un país")
+    print("7- Consultar contenido con un director involucrado")
+    print("8- Listar el TOP x de los géneros con más contenido")
+    print("9- Listar el TOP x de los actores con más participaciones en contenido")
+    print("0- Salir")
 
-catalog = None
 
+
+#catalog = None
+
+
+def loadData(control):
+    titles, directors = controller.loadTitles(control)
+    return titles, directors
+
+control = newController()
+catalog = control['model']
 """
 Menu principal
 """
@@ -49,6 +72,9 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        tt, dt = loadData(catalog)
+        print('Títulos cargados: ' + str(tt))
+        print('Directores cargados: ' + str(dt))
 
     elif int(inputs[0]) == 2:
         pass

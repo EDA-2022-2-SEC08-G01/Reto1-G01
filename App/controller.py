@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from operator import mod
 import config as cf
 import model
 import csv
@@ -30,9 +31,33 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
+def newController():
+    control = {'model': None}
+    control['model'] = model.newCatalog()
+    return control
 
 # Funciones para la carga de datos
+def loadTitles(catalog):
+    files = ["amazon_prime_titles-utf8-small.csv", "disney_plus_titles-utf8-small.csv", "hulu_titles-utf8-small.csv", "netflix_titles-utf8-small.csv"]
+    for file in files:
+        booksfile = cf.data_dir + file
+        input_file = csv.DictReader(open(booksfile, encoding="utf-8"))
+        for title in input_file:
+            model.addTitle(catalog, title)  
+    return model.titlesSize(catalog), model.directorsSize(catalog)
+
+
+def loadData(control):
+    catalog = control['model']
+    titles, directors = loadTitles(catalog)
+    sortTitles(catalog)
+    return titles, directors
+
+
 
 # Funciones de ordenamiento
+
+def sortTitles(catalog):
+    return model.sortTitles(catalog)
 
 # Funciones de consulta sobre el catálogo
