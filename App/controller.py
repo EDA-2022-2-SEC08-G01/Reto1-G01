@@ -24,7 +24,7 @@ from operator import mod
 import config as cf
 import model
 import csv
-
+#import tabulate
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -36,16 +36,31 @@ def newController():
     control['model'] = model.newCatalog()
     return control
 
+
+
+
 # Funciones para la carga de datos
 def loadTitles(catalog):
     files = ["amazon_prime_titles-utf8-small.csv", "disney_plus_titles-utf8-small.csv", "hulu_titles-utf8-small.csv", "netflix_titles-utf8-small.csv"]
-    for file in files:
-        booksfile = cf.data_dir + file
-        input_file = csv.DictReader(open(booksfile, encoding="utf-8"))
+    """streaming_services = [
+                          ['amazon',0],
+                          ['disney',0],
+                          ['hulu',0],
+                          ['netflix',0]]"""
+    """"
+    if file in 
+    """
+    for file in range(len(files)):
+        titlesfile = cf.data_dir + files[file]
+        input_file = csv.DictReader(open(titlesfile, encoding="utf-8"))
+        #count = 0
         for title in input_file:
             model.addTitle(catalog, title)  
+            
+         #   count += 1
+        #streaming_services[file][1] = count
     return model.titlesSize(catalog), model.directorsSize(catalog)
-
+    #return model.titlesSize(catalog), streaming_services
 
 def loadData(control):
     catalog = control['model']

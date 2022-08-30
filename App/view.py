@@ -25,7 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+#import tabulate
 
 """
 La vista se encarga de la interacción con el usuario
@@ -59,11 +59,11 @@ def printMenu():
 
 
 def loadData(control):
-    titles, directors = controller.loadTitles(control)
+    titles, directors = controller.loadData(control)
     return titles, directors
 
 control = newController()
-catalog = control['model']
+
 """
 Menu principal
 """
@@ -72,9 +72,10 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        tt, dt = loadData(catalog)
+        tt, dt = loadData(control)
         print('Títulos cargados: ' + str(tt))
         print('Directores cargados: ' + str(dt))
+        
 
     elif int(inputs[0]) == 2:
         pass
