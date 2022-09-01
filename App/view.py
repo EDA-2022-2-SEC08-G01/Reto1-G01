@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from atexit import register
 import config as cf
 import sys
 import controller
@@ -59,8 +60,8 @@ def printMenu():
 
 
 def loadData(control):
-    titles, directors = controller.loadData(control)
-    return titles, directors
+    register = controller.loadData(control)
+    return register
 
 control = newController()
 
@@ -72,9 +73,9 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        tt, dt = loadData(control)
-        print('Títulos cargados: ' + str(tt))
-        print('Directores cargados: ' + str(dt))
+        register = loadData(control)
+        print('Títulos cargados: ' + str(register))
+        
         
 
     elif int(inputs[0]) == 2:

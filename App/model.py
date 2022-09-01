@@ -39,66 +39,65 @@ los mismos.
 # Construccion de modelos
 def newCatalog():
     catalog ={
-        'titles': None,
-        'directors': None
+        'amazon_prime': None,
+        'disney_plus': None,
+        'hulu': None,
+        'netflix': None
     }
-    catalog['titles'] = lt.newList('ARRAY_LIST')
-    catalog['directors'] = lt.newList('SINGLE_LINKED', cmpfunction=comparedirector)
+    for platform in catalog:
+        catalog[platform] = lt.newList('ARRAY_LIST')
+
     return catalog 
 
 
 # Funciones para agregar informacion al catalogo
-def addTitle(catalog, title):
-    
-    lt.addLast(catalog['titles'], title)
-    directors = title["director"].split(",")
-    for director in directors:
-        addTitleDirector(catalog, director.strip(), title)
-    return catalog
+def addContent(platform, content, platform_name):
+    """"
+    platform: plataforma a la que se va agregar, ejemplo: catalog['amazon_prime']
+    content: el contenido que se va a añadir, viene como un diccionario
+    platform_name: nombre de la plataforma que se va a añadir
+    """
+    data = {
+        'show_id': content['show_id'],
+        'streaming_service': platform_name,
+        'type': content['type'],
+        'title': content['title'],
+        'director': content['director'],
+        'cast': content['cast'],
+        'country': content['country'],
+        'date_added': content['date_added'],
+        'release_year': content['release_year'],
+        'rating': content['rating'],
+        'duration': content['duration'],
+        'listed_in': content['listed_in'],
+        'description': content['description']
+    }
+    lt.addLast(platform,data)
 
-def addTitleDirector(catalog, directorname, title):
-    directors = catalog["directors"]
-    
-    posdirector = lt.isPresent(directors, directorname)
-    if posdirector > 0:
-        director = lt.getElement(directors, posdirector)
-    else:
-        director = newDirector(directorname)
-        lt.addLast(directors, director)
-  
-    
-    lt.addLast(director['titles'], title)
-    return catalog 
+
 # Funciones para creacion de datos
 
-def newDirector(name):
-    director = {'name': '', 'titles': None, "average_rating": 0}
-    director['name'] = name
-    director['titles'] = lt.newList("ARRAY_LIST")
-    return director
+#for key, value in dictionary:
+
     
 # Funciones de consulta
 
+def firstAndLast(catalog, num):
+    firstLast = lt.newList['ARRAY_LIST'] # se crea el array donde se guardarán los primeros 3 y los últimos 3 x|
+    for service in catalog:
+        line = catalog[service]
+        index = lt.size(line) -1 #se guarda el último índice
+        for pos in range(num):
+            first = lt.getElement(line, pos)
+            last = lt.getElement(line, index - pos)
+            lt.addFirst(firstLast, first)
+            lt.addLast(firstLast, last)
+    return firstLast
 
-
-def titlesSize(catalog):
-    return lt.size(catalog['titles'])
-
-def directorsSize(catalog):
-    return lt.size(catalog['directors'])
-
+def platformSize(platform):
+    return lt.size(platform)
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
-def compareyear(title1, title2):
-    return (int(title1["release_year"]) > int(title2["release_year"]))
 
-def comparedirector(directorname1, director):
-    if directorname1.lower() == director["name"].lower():
-        return 0
-    elif directorname1.lower() > director["name"].lower():
-        return 1
-    return -1
 # Funciones de ordenamiento
-def sortTitles(catalog):
-    sa.sort(catalog["titles"], compareyear)
