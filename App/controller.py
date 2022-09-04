@@ -45,12 +45,15 @@ def newController():
 def loadTitles(catalog):
     register = 0
     for service in catalog: #service toma el valor de amazon, hulu, etc
-        platform = catalog[service]
-        file = cf.data_dir + service + "_titles-utf8-small.csv"
-        input_file = csv.DictReader(open(file, encoding='utf-8'))
-        for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
-            model.addContent(platform, content, service)
-        register += model.platformSize(platform)
+        if service != "general":
+            
+            platform = catalog[service]
+            file = cf.data_dir + service + "_titles-utf8-small.csv"
+            input_file = csv.DictReader(open(file, encoding='utf-8'))
+            for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
+                model.addContent(platform, content, service)
+                model.addContent(catalog["general"], content, service)
+            register += model.platformSize(platform)
     return register
 # def loadTitles(catalog):
 #     files = ["amazon_prime_titles-utf8-small.csv", "disney_plus_titles-utf8-small.csv", "hulu_titles-utf8-small.csv", "netflix_titles-utf8-small.csv"]
@@ -73,6 +76,8 @@ def loadData(control):
     #sortTitles(catalog)
     return register
 
+def firstAndLast(catalog, num):
+    return model.firstAndLast(catalog, num)
 
 
 # Funciones de ordenamiento

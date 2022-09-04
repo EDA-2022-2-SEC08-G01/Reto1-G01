@@ -75,9 +75,9 @@ while True:
         print("Cargando información de los archivos ....")
         register = loadData(control)
         print('Títulos cargados: ' + str(register))
-        
-        
-
+        num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
+        firstAndLast= controller.firstAndLast(control["model"], num)
+        print(firstAndLast)
     elif int(inputs[0]) == 2:
         pass
 

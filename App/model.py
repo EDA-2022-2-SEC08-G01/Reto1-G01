@@ -42,7 +42,8 @@ def newCatalog():
         'amazon_prime': None,
         'disney_plus': None,
         'hulu': None,
-        'netflix': None
+        'netflix': None,
+        'general': None
     }
     for platform in catalog:
         catalog[platform] = lt.newList('ARRAY_LIST')
@@ -83,15 +84,17 @@ def addContent(platform, content, platform_name):
 # Funciones de consulta
 
 def firstAndLast(catalog, num):
-    firstLast = lt.newList['ARRAY_LIST'] # se crea el array donde se guardarán los primeros 3 y los últimos 3 x|
+    firstLast = lt.newList('ARRAY_LIST') # se crea el array donde se guardarán los primeros 3 y los últimos 3 x
+    
     for service in catalog:
-        line = catalog[service]
-        index = lt.size(line) -1 #se guarda el último índice
-        for pos in range(num):
-            first = lt.getElement(line, pos)
-            last = lt.getElement(line, index - pos)
-            lt.addFirst(firstLast, first)
-            lt.addLast(firstLast, last)
+        if service == "general":
+            line = catalog[service]
+            index = lt.size(line) -1 #se guarda la última posiciónS
+            for pos in range(num):
+                first = lt.getElement(line, pos)
+                last = lt.getElement(line, index - pos)
+                lt.addFirst(firstLast, first)
+                lt.addLast(firstLast, last)
     return firstLast
 
 def platformSize(platform):
