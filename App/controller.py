@@ -44,9 +44,11 @@ def newController():
 
 def loadTitles(catalog):
     register = 0
+    all_registers={}
     for service in catalog: #service toma el valor de amazon, hulu, etc
+        
         if service != "general":
-            
+            individual_register = 0    
             platform = catalog[service]
             file = cf.data_dir + service + "_titles-utf8-small.csv"
             input_file = csv.DictReader(open(file, encoding='utf-8'))
@@ -54,7 +56,9 @@ def loadTitles(catalog):
                 model.addContent(platform, content, service)
                 model.addContent(catalog["general"], content, service)
             register += model.platformSize(platform)
-    return register
+            individual_register += model.platformSize(platform)
+            all_registers[service] = individual_register
+    return register, all_registers
 # def loadTitles(catalog):
 #     files = ["amazon_prime_titles-utf8-small.csv", "disney_plus_titles-utf8-small.csv", "hulu_titles-utf8-small.csv", "netflix_titles-utf8-small.csv"]
 
@@ -72,9 +76,9 @@ def loadTitles(catalog):
 
 def loadData(control):
     catalog = control['model']
-    register = loadTitles(catalog)
+    register, all_registers = loadTitles(catalog)
     #sortTitles(catalog)
-    return register
+    return register, all_registers
 
 def firstAndLast(catalog, num):
     return model.firstAndLast(catalog, num)

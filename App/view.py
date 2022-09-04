@@ -73,11 +73,13 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        register = loadData(control)
+        register, ar = loadData(control)
         print('Títulos cargados: ' + str(register))
+        print("-"*100)
+        print(ar)
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
         firstAndLast= controller.firstAndLast(control["model"], num)
-        print(firstAndLast)
+        #print(firstAndLast)
     elif int(inputs[0]) == 2:
         pass
 
