@@ -29,6 +29,8 @@ from doctest import ELLIPSIS_MARKER
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.Algorithms.Sorting import insertionsort as ins
+from DISClib.Algorithms.Sorting import selectionsort as sel
 assert cf
 
 """
@@ -37,16 +39,17 @@ los mismos.
 """
 
 # Construccion de modelos
-def newCatalog():
+def newCatalog(structure):
     catalog ={
         'amazon_prime': None,
+
         'disney_plus': None,
         'hulu': None,
         'netflix': None,
         'general': None
     }
     for platform in catalog:
-        catalog[platform] = lt.newList('ARRAY_LIST')
+        catalog[platform] = lt.newList(datastructure = structure)
 
     return catalog 
 
@@ -102,5 +105,64 @@ def platformSize(platform):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
+def cmpMoviesByReleaseYear(movie1, movie2):
+    """
+    Devuelve verdadero (True) si el release_year de movie1 son menores que los
+    de movie2, en caso de que sean iguales tenga en cuenta el titulo y en caso de que
+    ambos criterios sean iguales tenga en cuenta la duración, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'release_year',
+    ‘title’ y ‘duration’
+    movie2: informacion de la segunda pelicula que incluye su valor 'release_year', 
+    ‘title’ y ‘duration’
+    """
+    respuesta = False 
+    if (int(movie1['release_year']) < int(movie2['release_year'])):
+        respuesta = True
+    elif  (int(movie1['release_year']) == int(movie2['release_year'])):
+        if (movie1['title']) < (movie2['title']):
+            respuesta = True 
+        elif  (movie1['title']) == (movie2['title']):
+            if (int(movie1['duration']) < int(movie2['duration'])):
+                respuesta = True
+    return respuesta
+# Funciones de ordenam
+
 
 # Funciones de ordenamiento
+def sortCatalog(catalog,order):
+    """esta funcion, organiza las peliculas de acuerdo con el cmp de cmpMoviesByReleaseYear
+        y devuelve, una sublista ordenada de acuerdo con las condiciones de este mismo cmp, junto a 
+        el tiempo que se demora en organziarlas
+    """
+    for service in catalog:
+        size = lt.size(catalog[service])
+        sub_list = lt.subList(catalog[service], 1, size)
+        start_time = getTime() # Tiempo de inicio de ejecucion
+        if order == 0: 
+            sorted_list = sa.sort(sub_list, cmpfunction=cmpMoviesByReleaseYear) # se organiza por medio de shell
+        elif order == 1: 
+            sorted_list = sel.sort(sub_list, cmpfunction=cmpMoviesByReleaseYear) # se organiza por medio de selection
+        else: 
+            sorted_list = ins.sort(sub_list, cmpfunction=cmpMoviesByReleaseYear) # se organiza por medio de insertion
+        end_time = getTime() # Tiempo final de ejecucion
+        delta_time = delta_time(start_time,end_time)
+    return sorted_list, delta_time
+
+
+# Funciones para medir tiempos de ejecucion
+
+def getTime():
+    """
+    devuelve el instante tiempo de procesamiento en milisegundos
+    """
+    return float(time.perf_counter()*1000)
+
+
+def deltaTime(start, end):
+    """
+    devuelve la diferencia entre tiempos de procesamiento muestreados
+    """
+    elapsed = float(end - start)
+    return elapsed
