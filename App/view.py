@@ -23,7 +23,7 @@
 from atexit import register
 import config as cf
 import sys
-import controller
+import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 import tabulate
@@ -40,7 +40,13 @@ def newController():
     control = controller.newController()
     return control
 
-    
+def chooseStructure():
+    structure = int(input("Seleccione una estructura para organizar los datos (0 para SINGLE_LINKED o 1 para ARRAY_LIST): "))
+    if structure == 0:
+        return "SINGLE_LINKED"
+    elif structure == 1:
+        return "ARRAY_LIST"
+
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
@@ -52,6 +58,7 @@ def printMenu():
     print("7- Consultar contenido con un director involucrado")
     print("8- Listar el TOP x de los géneros con más contenido")
     print("9- Listar el TOP x de los actores con más participaciones en contenido")
+    print("10- Seleccionar tipo de lista y ordenamiento")
     print("0- Salir")
 
 
@@ -62,6 +69,7 @@ def printMenu():
 def loadData(control):
     register = controller.loadData(control)
     return register
+
 
 control = newController()
 
@@ -81,8 +89,24 @@ while True:
         firstAndLast= controller.firstAndLast(control["model"], num)
         
     elif int(inputs[0]) == 2:
-        pass
-
+        centinel = True
+        while centinel: 
+            structure = int(input("Seleccione la estructura en la cual se organizarán los datos (0 para SINGLE_LINKED o 1 para ARRAY_LIST): "))
+            if structure == 1:
+                controller.newController('ARRAY_LIST')
+            elif structure == 0:
+                controller.newController('SINGLE_LINKED')
+            else:
+                print('Digite el numero correcto para la estructura')
+            while centinel:
+                order = int(input("Ingrese el tipo de ordenamiento iterativo (0 para shell, 1 para selection, 2 para insertion: "))
+                if 0<=order<=2:
+                    controller.sortCatalog(control, order)
+                    centinel = False
+                else:
+                    print('Digite el numero correcto para el ordenamiento')
+        
+        
     else:
         sys.exit(0)
 sys.exit(0)

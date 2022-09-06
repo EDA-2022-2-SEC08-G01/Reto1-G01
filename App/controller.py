@@ -32,9 +32,9 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def newController():
+def newController(structure):
     control = {'model': None}
-    control['model'] = model.newCatalog()
+    control['model'] = model.newCatalog(structure)
     return control
 
 
@@ -74,7 +74,7 @@ def firstAndLast(catalog, num):
 
 # Funciones de ordenamiento
 
-# def sortTitles(catalog):
-#     return model.sortTitles(catalog)
-
+def sortCatalog(control, order):
+    catalog = control["model"]
+    return model.sortCatalog(catalog, order)
 # Funciones de consulta sobre el catálogo
