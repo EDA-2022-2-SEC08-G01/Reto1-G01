@@ -26,7 +26,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-#import tabulate
+import tabulate
 
 """
 La vista se encarga de la interacción con el usuario
@@ -79,7 +79,7 @@ while True:
         print(ar)
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
         firstAndLast= controller.firstAndLast(control["model"], num)
-        #print(firstAndLast)
+        
     elif int(inputs[0]) == 2:
         pass
 

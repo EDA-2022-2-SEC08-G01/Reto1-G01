@@ -45,6 +45,7 @@ def newController():
 def loadTitles(catalog):
     register = 0
     all_registers={}
+    uuid= 0
     for service in catalog: #service toma el valor de amazon, hulu, etc
         
         if service != "general":
@@ -53,26 +54,13 @@ def loadTitles(catalog):
             file = cf.data_dir + service + "_titles-utf8-small.csv"
             input_file = csv.DictReader(open(file, encoding='utf-8'))
             for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
-                model.addContent(platform, content, service)
-                model.addContent(catalog["general"], content, service)
+                model.addContent(platform, content, service, uuid)
+                model.addContent(catalog["general"], content, service, uuid)
+                uuid += 1
             register += model.platformSize(platform)
             individual_register += model.platformSize(platform)
             all_registers[service] = individual_register
     return register, all_registers
-# def loadTitles(catalog):
-#     files = ["amazon_prime_titles-utf8-small.csv", "disney_plus_titles-utf8-small.csv", "hulu_titles-utf8-small.csv", "netflix_titles-utf8-small.csv"]
-
-#     for file in range(len(files)):
-#         titlesfile = cf.data_dir + files[file]
-#         input_file = csv.DictReader(open(titlesfile, encoding="utf-8"))
-#         #count = 0
-#         for title in input_file:
-#             model.addTitle(catalog, title)  
-            
-#          #   count += 1
-#         #streaming_services[file][1] = count
-#     return model.titlesSize(catalog), model.directorsSize(catalog)
-#     #return model.titlesSize(catalog), streaming_services
 
 def loadData(control):
     catalog = control['model']

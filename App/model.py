@@ -52,14 +52,14 @@ def newCatalog():
 
 
 # Funciones para agregar informacion al catalogo
-def addContent(platform, content, platform_name):
+def addContent(platform, content, platform_name, uuid):
     """"
     platform: plataforma a la que se va agregar, ejemplo: catalog['amazon_prime']
     content: el contenido que se va a añadir, viene como un diccionario
     platform_name: nombre de la plataforma que se va a añadir
     """
     data = {
-        'show_id': content['show_id'],
+        'show_id': uuid,
         'streaming_service': platform_name,
         'type': content['type'],
         'title': content['title'],
@@ -100,7 +100,28 @@ def firstAndLast(catalog, num):
 def platformSize(platform):
     return lt.size(platform)
 # Funciones utilizadas para comparar elementos dentro de una lista
-
+def cmpMoviesByReleaseYear(movie1, movie2):
+    """
+    Devuelve verdadero (True) si el release_year de movie1 son menores que los
+    de movie2, en caso de que sean iguales tenga en cuenta el titulo y en caso de que
+    ambos criterios sean iguales tenga en cuenta la duración, de lo contrario devuelva
+    falso (False).
+    Args:
+    movie1: informacion de la primera pelicula que incluye sus valores 'release_year',
+    ‘title’ y ‘duration’
+    movie2: informacion de la segunda pelicula que incluye su valor 'release_year', 
+    ‘title’ y ‘duration’
+    """
+    respuesta = False 
+    if (int(movie1['release_year']) < int(movie2['release_year'])):
+        respuesta = True
+    elif  (int(movie1['release_year']) == int(movie2['release_year'])):
+        if (movie1['title']) < (movie2['title']):
+            respuesta = True 
+        elif  (movie1['title']) == (movie2['title']):
+            if (int(movie1['duration']) < int(movie2['duration'])):
+                respuesta = True
+    return respuesta
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
 
 # Funciones de ordenamiento
