@@ -32,22 +32,22 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
-def newController(structure):
+def newController():
     control = {'model': None}
-    control['model'] = model.newCatalog(structure)
+    control["model"] = model.newCatalog()
     return control
-
+ 
 
 
 
 # Funciones para la carga de datos
 
-def loadTitles(catalog):
+def loadTitlesDefault(catalog):
     register = 0
     all_registers={}
     uuid= 0
+    print(catalog)
     for service in catalog: #service toma el valor de amazon, hulu, etc
-        
         if service != "general":
             individual_register = 0    
             platform = catalog[service]
@@ -62,17 +62,60 @@ def loadTitles(catalog):
             all_registers[service] = individual_register
     return register, all_registers
 
-def loadData(control):
+def loadDataDefault(control):
     catalog = control['model']
-    register, all_registers = loadTitles(catalog)
-    #sortTitles(catalog)
+    register, all_registers = loadTitlesDefault(catalog)
     return register, all_registers
+
+
+def loadTitles(catalog, sampleSize):
+    sample = str(sampleSize) + "pct"
+    if sampleSize == 100:
+        sample = "large"
+    register = 0
+    all_registers={}
+    uuid= 0
+    for service in catalog: #service toma el valor de amazon, hulu, etc
+        
+        if service != "general":
+            individual_register = 0    
+            platform = catalog[service]
+            file = cf.data_dir + service + "_titles-utf8-" + sample + ".csv"
+            input_file = csv.DictReader(open(file, encoding='utf-8'))
+            for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
+                model.addContent(platform, content, service, uuid)
+                model.addContent(catalog["general"], content, service, uuid)
+                uuid += 1
+            register += model.platformSize(platform)
+            individual_register += model.platformSize(platform)
+            all_registers[service] = individual_register
+    return register, all_registers
+
+def loadData(control, sampleSize):
+    catalog = control["model"]
+    register, all_registers = loadTitles(catalog, sampleSize)
+    
+    return register, all_registers
+
+
+
+
+
+
+
+
 
 def firstAndLast(catalog, num):
     return model.firstAndLast(catalog, num)
 
 
 # Funciones de ordenamiento
+def choosingSorts(control, orderType):
+    return model.choosingSorts(control["model"], orderType)
+
+control = newController()
+data = loadData(control, 50)
+
 
 def sortCatalog(control, order):
     catalog = control["model"]
