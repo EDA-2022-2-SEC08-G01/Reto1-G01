@@ -98,13 +98,6 @@ def loadData(control, sampleSize):
     return register, all_registers
 
 
-
-
-
-
-
-
-
 def firstAndLast(catalog, num):
     return model.firstAndLast(catalog, num)
 

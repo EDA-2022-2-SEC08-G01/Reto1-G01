@@ -26,7 +26,7 @@ import sys
 import controller as controller
 from DISClib.ADT import list as lt
 assert cf
-import tabulate
+from tabulate import tabulate
 
 """
 La vista se encarga de la interacción con el usuario
@@ -55,13 +55,19 @@ def printMenu():
     print("4- Consultar contenido donde participa un actor")
     print("5- Consultar contenido por un género específico")
     print("6- Consultar contenido producido en un país")
-    print("7- Consultar contenido con un director involucrado")
+    print("7- Consultar1 contenido con un director involucrado")
     print("8- Listar el TOP x de los géneros con más contenido")
     print("9- Seleccionar tipo de lista, ordenamiento y muestra")
     print("0- Salir")
 
 
-
+def countPlatformTable(ar):
+    values = list(ar.values())
+    keys = list(ar.keys())
+    platforms = [[keys[0],str(values[0])],[keys[1],str(values[1])],[keys[2],str(values[2])],[keys[3],str(values[3])]]
+    print(tabulate((platforms), headers= ["Service Name", "count"], tablefmt = "fancy_grid"))
+    print("\n")
+    
 #catalog = None
 
 def loadData(control, sampleSize):
@@ -92,13 +98,16 @@ while True:
         register, ar = loadData(control, sampleSize)
         print('Títulos cargados: ' + str(register))
         print("-"*100)
+<<<<<<< HEAD
         print(ar)
         
+=======
+        print(countPlatformTable(ar))
+>>>>>>> 334c3287ba047e07cc389a702a95ef2d826aebdf
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
         firstAndLast= controller.firstAndLast(control["model"], num)
+        print(firstAndLast)
         
-
-
 
     elif int(inputs[0]) == 9:
         
