@@ -40,7 +40,7 @@ los mismos.
 """
 
 # Construccion de modelos
-def newCatalog():
+def newCatalog(structure):
     catalog ={
         'amazon_prime': None,
         'disney_plus': None,
@@ -49,7 +49,7 @@ def newCatalog():
         'general': None
     }
     for platform in catalog:
-        catalog[platform] = lt.newList("ARRAY_LIST")
+        catalog[platform] = lt.newList(structure)
 
     return catalog 
 
@@ -122,7 +122,7 @@ def cmpMoviesByReleaseYear(movie1, movie2):
         duration1 = movie1["duration"].split()
         
         duration2 = movie2["duration"].split()
-        
+        print(duration1, duration2)
         if (int(movie1['release_year']) < int(movie2['release_year'])):
             respuesta = True
         elif  (int(movie1['release_year']) == int(movie2['release_year'])):

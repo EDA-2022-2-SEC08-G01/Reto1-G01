@@ -36,8 +36,8 @@ operación solicitada
 """
 
 
-def newController():
-    control = controller.newController()
+def newController(structure):
+    control = controller.newController(structure)
     return control
 
 def chooseStructure():
@@ -74,7 +74,6 @@ def loadDataDefault(control):
 
 
 
-control = newController()
 
 """
 Menu principal
@@ -83,11 +82,18 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        structure = input("Selecciones una estructura de datos ('ARRAY_LIST', 'SINGLE_LINKED'): ")
+        if structure != "ARRAY_LIST" and structure != "SINGLE_LINKED":
+            structure = input("Por favor, elija una opcion válida: ")
+        control = newController(structure)
+        sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
+        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection'): ")
         print("Cargando información de los archivos ....")
-        register, ar = loadDataDefault(control)
+        register, ar = loadData(control, sampleSize)
         print('Títulos cargados: ' + str(register))
         print("-"*100)
         print(ar)
+        
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
         firstAndLast= controller.firstAndLast(control["model"], num)
         
@@ -96,29 +102,13 @@ while True:
 
     elif int(inputs[0]) == 9:
         
-        sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
-        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection'): ")
-        register, ar = loadData(control, sampleSize)
+        #sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
+        #orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection'): ")
+        #register, ar = loadData(control, sampleSize)
         sorted_list, delta = controller.choosingSorts(control, orderType)
         print(delta)
         print("-"*100)
-        print(len(sorted_list))
-        # centinel = True
-        # while centinel: 
-        #     structure = int(input("Seleccione la estructura en la cual se organizarán los datos (0 para SINGLE_LINKED o 1 para ARRAY_LIST): "))
-        #     if structure == 1:
-        #         controller.newController('ARRAY_LIST')
-        #     elif structure == 0:
-        #         controller.newController('SINGLE_LINKED')
-        #     else:
-        #         print('Digite el numero correcto para la estructura')
-        #     while centinel:
-        #         order = int(input("Ingrese el tipo de ordenamiento iterativo (0 para shell, 1 para selection, 2 para insertion: "))
-        #         if 0<=order<=2:
-        #             controller.sortCatalog(control, order)
-        #             centinel = False
-        #         else:
-        #             print('Digite el numero correcto para el ordenamiento')
+        #print(sorted_list)
         
         
     else:
