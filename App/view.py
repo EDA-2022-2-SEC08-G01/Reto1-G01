@@ -98,12 +98,9 @@ while True:
         register, ar = loadData(control, sampleSize)
         print('Títulos cargados: ' + str(register))
         print("-"*100)
-<<<<<<< HEAD
-        print(ar)
-        
-=======
+
         print(countPlatformTable(ar))
->>>>>>> 334c3287ba047e07cc389a702a95ef2d826aebdf
+
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
         firstAndLast= controller.firstAndLast(control["model"], num)
         print(firstAndLast)
