@@ -27,6 +27,8 @@ import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
+default_limit = 1000
+sys.setrecursionlimit(default_limit*100)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -93,7 +95,7 @@ while True:
             structure = input("Por favor, elija una opcion válida: ")
         control = newController(structure)
         sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
-        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection'): ")
+        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ")
         print("Cargando información de los archivos ....")
         register, ar = loadData(control, sampleSize)
         print('Títulos cargados: ' + str(register))

@@ -32,6 +32,8 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import insertionsort as ins
 from DISClib.Algorithms.Sorting import selectionsort as sel
+from DISClib.Algorithms.Sorting import mergesort as mgs
+from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
 """
@@ -122,7 +124,7 @@ def cmpMoviesByReleaseYear(movie1, movie2):
         duration1 = movie1["duration"].split()
         
         duration2 = movie2["duration"].split()
-        print(duration1, duration2)
+        #print(duration1, duration2)
         if (int(movie1['release_year']) < int(movie2['release_year'])):
             respuesta = True
         elif  (int(movie1['release_year']) == int(movie2['release_year'])):
@@ -149,6 +151,15 @@ def choosingSorts(catalog, orderType):
         startTime = getTime()
         sorted_list = sel.sort(sub, cmpMoviesByReleaseYear)
         endTime = getTime()
+    elif orderType == "merge":
+        startTime = getTime()
+        sorted_list = mgs.sort(sub, cmpMoviesByReleaseYear)
+        endTime = getTime()
+    elif orderType == "quick":
+        startTime = getTime()
+        sorted_list = qs.sort(sub, cmpMoviesByReleaseYear)
+        endTime = getTime()
+
     delta = deltaTime(startTime, endTime)  
     return sorted_list, delta
 
