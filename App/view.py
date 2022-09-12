@@ -69,6 +69,8 @@ def countPlatformTable(ar):
     platforms = [[keys[0],str(values[0])],[keys[1],str(values[1])],[keys[2],str(values[2])],[keys[3],str(values[3])]]
     print(tabulate((platforms), headers= ["Service Name", "count"], tablefmt = "fancy_grid"))
     print("\n")
+
+#def firstAndLastTable():
     
 #catalog = None
 
@@ -98,14 +100,21 @@ while True:
         orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ")
         print("Cargando información de los archivos ....")
         register, ar = loadData(control, sampleSize)
+        print(register)
         print('Títulos cargados: ' + str(register))
         print("-"*100)
 
         print(countPlatformTable(ar))
 
         num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
-        firstAndLast= controller.firstAndLast(control["model"], num)
-        print(firstAndLast)
+        firstAndLast = controller.firstAndLast(control["model"], num)
+        consulta = (list(firstAndLast.values())[0])
+        lista=[]
+        for pelicula in consulta:
+            elemento= list(pelicula.values())
+            lista.append(elemento)
+        print(tabulate((lista), headers= ['show_id', 'streaming_service', 'type', 'release_year', 
+            'title', 'director', 'cast', 'country', 'date_adeed', 'rating', 'duration', 'listed_in', 'description'], tablefmt='grid', stralign= 'left'))
         
 
     elif int(inputs[0]) == 9:
