@@ -82,7 +82,6 @@ def loadDataDefault(control):
 
 
 
-
 """
 Menu principal
 """
@@ -93,6 +92,7 @@ while True:
         structure = input("Selecciones una estructura de datos ('ARRAY_LIST', 'SINGLE_LINKED'): ")
         if structure != "ARRAY_LIST" and structure != "SINGLE_LINKED":
             structure = input("Por favor, elija una opcion válida: ")
+        
         control = newController(structure)
         sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
         orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ")

@@ -131,8 +131,9 @@ def cmpMoviesByReleaseYear(movie1, movie2):
             if (movie1['title']) < (movie2['title']):
                 respuesta = True 
             elif  (movie1['title']) == (movie2['title']):
-                if (int(duration1[0]) < int(duration2[0])):
-                    respuesta = True
+                if len(duration1) > 0 and len(duration2) > 0:
+                    if (int(duration1[0]) < int(duration2[0])):
+                        respuesta = True
     return respuesta
 
 def choosingSorts(catalog, orderType):
