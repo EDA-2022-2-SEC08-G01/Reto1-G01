@@ -80,7 +80,7 @@ def loadTitles(catalog, sampleSize):
         if service != "general":
             individual_register = 0    
             platform = catalog[service]
-            file = cf.data_dir + service + "_titles-utf8-" + sample + ".csv"
+            file = cf.data_dir + "Streaming/" + service + "_titles-utf8-" + sample + ".csv"
             input_file = csv.DictReader(open(file, encoding='utf-8'))
             for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
                 model.addContent(platform, content, service, uuid)
