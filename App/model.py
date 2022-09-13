@@ -52,7 +52,7 @@ def newCatalog(structure):
     }
     for platform in catalog:
         catalog[platform] = lt.newList(structure)
-
+        #ins.sort(catalog[platform], cmpMoviesByReleaseYear)
     return catalog 
 
 
@@ -83,7 +83,7 @@ def addContent(platform, content, platform_name, uuid):
 
 # Funciones para creacion de datos
 
-#for key, value in dictionary:
+
 
     
 # Funciones de consulta
@@ -104,6 +104,27 @@ def firstAndLast(catalog, num):
 
 def platformSize(platform):
     return lt.size(platform)
+
+
+
+def findContentByCountry(catalog, country):
+    platform = catalog["general"]
+    size = lt.size(platform)
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = {"TV Shows": 0, "Movies": 0}
+    for content in lt.iterator(platform):
+        #print(content)
+        if content["country"].lower() == country.lower():
+            lt.addLast(sub, content)
+            if content["type"] == "TV Show":
+                all_registers['TV Shows'] += 1
+            elif content["type"] == "Movie":
+                all_registers['Movies'] += 1
+            
+    return all_registers, sub
+            
+            
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
@@ -120,20 +141,19 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     ‘title’ y ‘duration’
     """
     respuesta = False 
-    if movie1["type"] == "Movie" and movie2["type"] == "Movie":
-        duration1 = movie1["duration"].split()
-        
-        duration2 = movie2["duration"].split()
+    #if movie1["type"] == "Movie" and movie2["type"] == "Movie":
+    duration1 = movie1["duration"].split()
+    duration2 = movie2["duration"].split()
         #print(duration1, duration2)
-        if (int(movie1['release_year']) < int(movie2['release_year'])):
+    if (int(movie1['release_year']) < int(movie2['release_year'])):
             respuesta = True
-        elif  (int(movie1['release_year']) == int(movie2['release_year'])):
-            if (movie1['title']) < (movie2['title']):
-                respuesta = True 
-            elif  (movie1['title']) == (movie2['title']):
-                if len(duration1) > 0 and len(duration2) > 0:
-                    if (int(duration1[0]) < int(duration2[0])):
-                        respuesta = True
+    elif  (int(movie1['release_year']) == int(movie2['release_year'])):
+        if (movie1['title']) < (movie2['title']):
+            respuesta = True 
+        elif  (movie1['title']) == (movie2['title']):
+            if len(duration1) > 0 and len(duration2) > 0:
+                if (int(duration1[0]) < int(duration2[0])):
+                    respuesta = True
     return respuesta
 
 def choosingSorts(catalog, orderType):

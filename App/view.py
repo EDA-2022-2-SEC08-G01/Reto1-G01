@@ -21,6 +21,7 @@
  """
 
 from atexit import register
+from pyexpat import model
 import config as cf
 import sys
 import controller as controller
@@ -91,13 +92,12 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        structure = input("Selecciones una estructura de datos ('ARRAY_LIST', 'SINGLE_LINKED'): ")
+        structure = input("Selecciones una estructura de datos ('ARRAY_LIST', 'SINGLE_LINKED'): ").upper()
         if structure != "ARRAY_LIST" and structure != "SINGLE_LINKED":
             structure = input("Por favor, elija una opcion válida: ")
         
         control = newController(structure)
         sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
-        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ")
         print("Cargando información de los archivos ....")
         register, ar = loadData(control, sampleSize)
         print(register)
@@ -113,15 +113,20 @@ while True:
         for pelicula in consulta:
             elemento= list(pelicula.values())
             lista.append(elemento)
-        print(tabulate((lista), headers= ['show_id', 'streaming_service', 'type', 'release_year', 
-            'title', 'director', 'cast', 'country', 'date_adeed', 'rating', 'duration', 'listed_in', 'description'], tablefmt='grid', stralign= 'left'))
-        
+        #print(tabulate((lista), headers= ['show_id', 'streaming_service', 'type', 'release_year', 
+        #    'title', 'director', 'cast', 'country', 'date_adeed', 'rating', 'duration', 'listed_in', 'description'], tablefmt='grid', stralign= 'left'))
+        print(lista)
+
+    elif int(inputs[0]) == 6:
+        country = input("Ingrese el país que desea buscar: ")
+        register, contentByCountry = controller.findContentByCountry(control, country)
+        print(register)
+        print(contentByCountry)
 
     elif int(inputs[0]) == 9:
         
-        #sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
-        #orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection'): ")
-        #register, ar = loadData(control, sampleSize)
+
+        orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ").lower()
         sorted_list, delta = controller.choosingSorts(control, orderType)
         print(delta)
         print("-"*100)

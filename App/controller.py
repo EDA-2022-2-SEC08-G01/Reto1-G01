@@ -22,6 +22,8 @@
 
 from atexit import register
 from operator import mod
+from App.model import cmpMoviesByReleaseYear
+from DISClib.Algorithms.Sorting import insertionsort as ins
 import config as cf
 import model
 import csv
@@ -86,6 +88,8 @@ def loadTitles(catalog, sampleSize):
                 model.addContent(platform, content, service, uuid)
                 model.addContent(catalog["general"], content, service, uuid)
                 uuid += 1
+                ins.sort(platform, cmpMoviesByReleaseYear)
+                ins.sort(catalog["general"], cmpMoviesByReleaseYear)
             register += model.platformSize(platform)
             individual_register += model.platformSize(platform)
             all_registers[service] = individual_register
@@ -106,11 +110,12 @@ def firstAndLast(catalog, num):
 def choosingSorts(control, orderType):
     return model.choosingSorts(control["model"], orderType)
 
-# control = newController()
-# data = loadData(control, 50)
+
 
 
 def sortCatalog(control, order):
     catalog = control["model"]
     return model.sortCatalog(catalog, order)
 # Funciones de consulta sobre el catálogo
+def findContentByCountry(control, country):
+    return model.findContentByCountry(control["model"], country)
