@@ -31,6 +31,8 @@ from tabulate import tabulate
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
 
+# revisar cambios hechos del 8 al 11 de septiembre, hemos hecho más commits después de esa fecha gracias :)
+
 """
 La vista se encarga de la interacción con el usuario
 Presenta el menu de opciones y por cada seleccion
@@ -116,6 +118,7 @@ while True:
         #print(tabulate((lista), headers= ['show_id', 'streaming_service', 'type', 'release_year', 
         #    'title', 'director', 'cast', 'country', 'date_adeed', 'rating', 'duration', 'listed_in', 'description'], tablefmt='grid', stralign= 'left'))
         print(lista)
+
 
     elif int(inputs[0]) == 6:
         country = input("Ingrese el país que desea buscar: ")
