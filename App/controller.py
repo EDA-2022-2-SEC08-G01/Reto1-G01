@@ -22,7 +22,7 @@
 
 from atexit import register
 from operator import mod
-from App.model import cmpMoviesByReleaseYear
+from model import cmpMoviesByReleaseYear
 from DISClib.Algorithms.Sorting import insertionsort as ins
 import config as cf
 import model
@@ -43,32 +43,6 @@ def newController(structure):
 
 
 # Funciones para la carga de datos
-
-def loadTitlesDefault(catalog):
-    register = 0
-    all_registers={}
-    uuid= 0
-    print(catalog)
-    for service in catalog: #service toma el valor de amazon, hulu, etc
-        if service != "general":
-            individual_register = 0    
-            platform = catalog[service]
-            file = cf.data_dir + service + "_titles-utf8-small.csv"
-            input_file = csv.DictReader(open(file, encoding='utf-8'))
-            for content in input_file: #content toma el valor de cada diccionario "cada línea del archivo"
-                model.addContent(platform, content, service, uuid)
-                model.addContent(catalog["general"], content, service, uuid)
-                uuid += 1
-            register += model.platformSize(platform)
-            individual_register += model.platformSize(platform)
-            all_registers[service] = individual_register
-    return register, all_registers
-
-def loadDataDefault(control):
-    catalog = control['model']
-    register, all_registers = loadTitlesDefault(catalog)
-    return register, all_registers
-
 
 def loadTitles(catalog, sampleSize):
     sample = str(sampleSize) + "pct"
@@ -93,17 +67,17 @@ def loadTitles(catalog, sampleSize):
             register += model.platformSize(platform)
             individual_register += model.platformSize(platform)
             all_registers[service] = individual_register
+    
     return register, all_registers
+
+control = newController("ARRAY_LIST")
+#print(loadTitles(control["model"], 5))
 
 def loadData(control, sampleSize):
     catalog = control["model"]
     register, all_registers = loadTitles(catalog, sampleSize)
     
     return register, all_registers
-
-
-def firstAndLast(catalog, num):
-    return model.firstAndLast(catalog, num)
 
 
 # Funciones de ordenamiento
@@ -117,5 +91,14 @@ def sortCatalog(control, order):
     catalog = control["model"]
     return model.sortCatalog(catalog, order)
 # Funciones de consulta sobre el catálogo
+def firstAndLast(catalog):
+    return model.firstAndLast(catalog)
+
+
 def findContentByCountry(control, country):
     return model.findContentByCountry(control["model"], country)
+
+def moviesInYears(control, initial_year, final_year):
+    return model.moviesInYears(control["model"], initial_year, final_year)
+
+
