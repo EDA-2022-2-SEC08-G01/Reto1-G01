@@ -88,24 +88,19 @@ def addContent(platform, content, platform_name, uuid):
     
 # Funciones de consulta
 
-def firstAndLast(catalog, num):
+def firstAndLast(catalog):
     firstLast = lt.newList('ARRAY_LIST') # se crea el array donde se guardarán los primeros 3 y los últimos 3 x
     
     for service in catalog:
         if service == "general":
             line = catalog[service]
             index = lt.size(line) -1 #se guarda la última posiciónS
-            for pos in range(num):
+            for pos in range(3):
                 first = lt.getElement(line, pos)
                 last = lt.getElement(line, index - pos)
                 lt.addFirst(firstLast, first)
                 lt.addLast(firstLast, last)
     return firstLast
-
-def platformSize(platform):
-    return lt.size(platform)
-
-
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
@@ -113,8 +108,8 @@ def findContentByCountry(catalog, country):
     sub = lt.newList("ARRAY_LIST")
     all_registers = {"TV Shows": 0, "Movies": 0}
     for content in lt.iterator(platform):
-        #print(content)
         if content["country"].lower() == country.lower():
+            print(content)
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
                 all_registers['TV Shows'] += 1
@@ -123,7 +118,21 @@ def findContentByCountry(catalog, country):
             
     return all_registers, sub
             
-            
+def moviesInYears(catalog, initial_year, final_year):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = 0
+    for content in lt.iterator(platform):
+        
+        if content["type"] == "Movie":
+            if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
+                lt.addLast(sub, content)
+                all_registers += 1
+    return sub, all_registers
+
+
+def platformSize(platform):
+    return lt.size(platform)
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
@@ -144,7 +153,7 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     #if movie1["type"] == "Movie" and movie2["type"] == "Movie":
     duration1 = movie1["duration"].split()
     duration2 = movie2["duration"].split()
-        #print(duration1, duration2)
+
     if (int(movie1['release_year']) < int(movie2['release_year'])):
             respuesta = True
     elif  (int(movie1['release_year']) == int(movie2['release_year'])):
@@ -187,7 +196,6 @@ def choosingSorts(catalog, orderType):
 # Funciones de ordenamiento
 
 # Funciones para medir tiempos de ejecucion
-
 def getTime():
     """
     devuelve el instante tiempo de procesamiento en milisegundos

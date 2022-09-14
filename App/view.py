@@ -108,8 +108,8 @@ while True:
 
         print(countPlatformTable(ar))
 
-        num = int(input("Ingrese el número de los primeros y últimos títulos que desea conocer: "))
-        firstAndLast = controller.firstAndLast(control["model"], num)
+        
+        firstAndLast = controller.firstAndLast(control["model"])
         consulta = (list(firstAndLast.values())[0])
         lista=[]
         for pelicula in consulta:
@@ -118,6 +118,12 @@ while True:
         #print(tabulate((lista), headers= ['show_id', 'streaming_service', 'type', 'release_year', 
         #    'title', 'director', 'cast', 'country', 'date_adeed', 'rating', 'duration', 'listed_in', 'description'], tablefmt='grid', stralign= 'left'))
         print(lista)
+    elif int(inputs[0]) == 2:
+        initial_year = int(input("Ingrese el año inicial del periodo: "))
+        final_year = int(input("Ingrese el año final del periodo: "))
+        sub, ar = controller.moviesInYears(control, initial_year, final_year)
+        print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
+        print(sub)
 
 
     elif int(inputs[0]) == 6:
