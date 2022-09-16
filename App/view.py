@@ -124,6 +124,13 @@ while True:
         sub, ar = controller.moviesInYears(control, initial_year, final_year)
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
         print(sub)
+    
+    elif int(inputs[0]) == 4:
+        nameAutor = input("Ingrese el nombre del autor que desea buscar: ")
+        register, contentByAutor = controller.findContentByActor(control, nameAutor)
+        print(register)
+        print(contentByAutor)
+
 
 
     elif int(inputs[0]) == 6:

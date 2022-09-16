@@ -103,6 +103,9 @@ def firstAndLast(catalog):
 def findContentByCountry(control, country):
     return model.findContentByCountry(control["model"], country)
 
+def findContentByActor(control, nameAutor):
+    return model.findContentByActor(control["model"], nameAutor)
+
 def moviesInYears(control, initial_year, final_year):
     return model.moviesInYears(control["model"], initial_year, final_year)
 
