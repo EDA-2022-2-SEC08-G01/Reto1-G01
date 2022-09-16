@@ -24,6 +24,8 @@ from atexit import register
 from operator import mod
 from model import cmpMoviesByReleaseYear
 from DISClib.Algorithms.Sorting import insertionsort as ins
+from DISClib.Algorithms.Sorting import mergesort as mer
+from DISClib.Algorithms.Sorting import quicksort as qs
 import config as cf
 import model
 import csv
@@ -51,6 +53,7 @@ def loadTitles(catalog, sampleSize):
     register = 0
     all_registers={}
     uuid= 0
+    count = 0
     for service in catalog: #service toma el valor de amazon, hulu, etc
         
         if service != "general":
@@ -62,8 +65,10 @@ def loadTitles(catalog, sampleSize):
                 model.addContent(platform, content, service, uuid)
                 model.addContent(catalog["general"], content, service, uuid)
                 uuid += 1
-                ins.sort(platform, cmpMoviesByReleaseYear)
-                ins.sort(catalog["general"], cmpMoviesByReleaseYear)
+                count += 1
+                if count % 50 == 0:
+                    ins.sort(platform, cmpMoviesByReleaseYear)
+                    ins.sort(catalog["general"], cmpMoviesByReleaseYear)
             register += model.platformSize(platform)
             individual_register += model.platformSize(platform)
             all_registers[service] = individual_register

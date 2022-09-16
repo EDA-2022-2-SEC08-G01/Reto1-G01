@@ -72,7 +72,7 @@ def addContent(platform, content, platform_name, uuid):
         'cast': content['cast'],
         'country': content['country'],
         'date_added': content['date_added'],
-        'release_year': content['release_year'],
+        'release_year': int(content['release_year']),
         'rating': content['rating'],
         'duration': content['duration'],
         'listed_in': content['listed_in'],
@@ -154,9 +154,9 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     duration1 = movie1["duration"].split()
     duration2 = movie2["duration"].split()
 
-    if (int(movie1['release_year']) < int(movie2['release_year'])):
+    if ((movie1['release_year']) < (movie2['release_year'])):
             respuesta = True
-    elif  (int(movie1['release_year']) == int(movie2['release_year'])):
+    elif  ((movie1['release_year']) == (movie2['release_year'])):
         if (movie1['title']) < (movie2['title']):
             respuesta = True 
         elif  (movie1['title']) == (movie2['title']):
