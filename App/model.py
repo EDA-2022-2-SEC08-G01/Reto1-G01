@@ -146,26 +146,37 @@ def moviesInYears(catalog, initial_year, final_year):
     return sub, all_registers
 
 def directorInvolved(catalog, director):
-    platform = catalog["general"]
+    #platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
     type_registers = {"TV Shows": 0, "Movies": 0}
     service_registers = {}
     genre_registers = {}
-    for content in lt.iterator(platform):
-        directors = content["director"].lower().split(",")
-        print(directors)
-        if director.lower() in directors:
-            listed_register = 0
-            if content["type"] == "Movie":
-                type_registers["Movies"] += 1
-            elif content["type"] == "TV Show":
-                type_registers["TV Shows"] += 1
-            listed_register += 1
-            genre_registers[content["listed_in"]] = listed_register
-            service_registers[content["streaming_service"]] = listed_register
+
+    for platform in catalog:
+        count_service = 0
+        if platform != "general":
+            for content in lt.iterator(catalog[platform]):
+                directors = content["director"].lower().split(",") #en caso de haber más de un director se realiza el split
+                if director.lower() in directors: #se comprueba que el director esté 
+                    if content["type"] == "Movie": #se comprueba si el tipo es película o serie y se le suma uno
+                        type_registers["Movies"] += 1
+                    elif content["type"] == "TV Show":
+                        type_registers["TV Shows"] += 1
+                    count_service += 1
+                    service_registers[platform] = count_service #se le suma uno al diccionario de conteo de servicios
+                    listed = content["listed_in"].split(", ") #se realiza el split de los géneros por si hay más de uno
+                    for genre in listed: #se itera sobre los géneros para hacer el conteo
+                        if genre not in genre_registers:
+                            genre_registers[genre] = 0
+                            genre_registers[genre] += 1
+                        else:
+                            genre_registers[genre] += 1
+            
+            
+            
 
 
-    return type_registers, service_registers
+    return type_registers, service_registers, genre_registers
 
 
 

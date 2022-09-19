@@ -141,8 +141,8 @@ while True:
     
     elif int(inputs[0]) == 7:
         director = input("Ingrese el director que desea buscar: ")
-        tr = controller.directorInvolved(control, director)
-        print(tr)
+        tr, sr, gr = controller.directorInvolved(control, director)
+        print(tr, sr, gr)
 
     elif int(inputs[0]) == 9:
         
