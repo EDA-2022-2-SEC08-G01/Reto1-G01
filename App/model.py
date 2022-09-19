@@ -104,17 +104,16 @@ def firstAndLast(catalog):
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
-    size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
     all_registers = {"TV Shows": 0, "Movies": 0}
     for content in lt.iterator(platform):
         if content["country"].lower() == country.lower():
-            print(content)
+            
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_registers['TV Shows'] += 1
+                all_registers["TV Shows"] += 1
             elif content["type"] == "Movie":
-                all_registers['Movies'] += 1
+                all_registers["Movies"] += 1
             
     return all_registers, sub
             
@@ -129,6 +128,31 @@ def moviesInYears(catalog, initial_year, final_year):
                 lt.addLast(sub, content)
                 all_registers += 1
     return sub, all_registers
+
+def directorInvolved(catalog, director):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    type_registers = {"TV Shows": 0, "Movies": 0}
+    service_registers = {}
+    genre_registers = {}
+    for content in lt.iterator(platform):
+        directors = content["director"].lower().split(",")
+        print(directors)
+        if director.lower() in directors:
+            listed_register = 0
+            if content["type"] == "Movie":
+                type_registers["Movies"] += 1
+            elif content["type"] == "TV Show":
+                type_registers["TV Shows"] += 1
+            listed_register += 1
+            genre_registers[content["listed_in"]] = listed_register
+            service_registers[content["streaming_service"]] = listed_register
+
+
+    return type_registers, service_registers
+
+
+
 
 
 def platformSize(platform):

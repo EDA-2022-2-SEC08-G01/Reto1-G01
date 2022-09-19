@@ -128,6 +128,11 @@ while True:
         register, contentByCountry = controller.findContentByCountry(control, country)
         print(register)
         print(contentByCountry)
+    
+    elif int(inputs[0]) == 7:
+        director = input("Ingrese el director que desea buscar: ")
+        tr = controller.directorInvolved(control, director)
+        print(tr)
 
     elif int(inputs[0]) == 9:
         
