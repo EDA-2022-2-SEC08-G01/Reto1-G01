@@ -115,6 +115,18 @@ def firstLastSub(sub):
             lt.addLast(firstLast, last)
             mgs.sort(firstLast, cmpMoviesByReleaseYear)
     return firstLast
+    
+def moviesInYears(catalog, initial_year, final_year):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = 0
+    for content in lt.iterator(platform):
+        
+        if content["type"] == "Movie":
+            if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
+                lt.addLast(sub, content)
+                all_registers += 1
+    return sub, all_registers
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
@@ -147,17 +159,6 @@ def findContentByActor(catalog, nameAutor):
                 all_registers['Movies'] += 1
     return all_registers, sub
                         
-def moviesInYears(catalog, initial_year, final_year):
-    platform = catalog["general"]
-    sub = lt.newList("ARRAY_LIST")
-    all_registers = 0
-    for content in lt.iterator(platform):
-        
-        if content["type"] == "Movie":
-            if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
-                lt.addLast(sub, content)
-                all_registers += 1
-    return sub, all_registers
 
 def directorInvolved(catalog, director):
     #platform = catalog["general"]
@@ -186,7 +187,6 @@ def directorInvolved(catalog, director):
                         else:
                             genre_registers[genre] += 1
                     lt.addLast(sub, content)
-    print(lt.size(sub))
     if lt.size(sub) >= 6:
         sub = firstLastSub(sub)
     return type_registers, service_registers, genre_registers, sub
@@ -201,6 +201,10 @@ def platformSize(platform):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
+
+
+
+
 def cmpMoviesByReleaseYear(movie1, movie2):
     """
     Devuelve verdadero (True) si el release_year de movie1 son menores que los
