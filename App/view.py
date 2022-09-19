@@ -130,7 +130,12 @@ while True:
         register, contentByAutor = controller.findContentByActor(control, nameAutor)
         print(register)
         print(contentByAutor)
-
+    
+    elif int(inputs[0]) == 5:
+        genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
+        ans = controller.findContentByGenre(control, genre)
+        print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
+        print(ans[0] and ans[1])
 
 
     elif int(inputs[0]) == 6:
