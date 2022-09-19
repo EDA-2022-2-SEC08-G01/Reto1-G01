@@ -72,7 +72,7 @@ def addContent(platform, content, platform_name, uuid):
         'cast': content['cast'],
         'country': content['country'],
         'date_added': content['date_added'],
-        'release_year': int(content['release_year']),
+        'release_year': content['release_year'],
         'rating': content['rating'],
         'duration': content['duration'],
         'listed_in': content['listed_in'],
@@ -116,7 +116,23 @@ def findContentByCountry(catalog, country):
                 all_registers["Movies"] += 1
             
     return all_registers, sub
-            
+
+def findContentByActor(catalog, nameAutor):
+    platform = catalog["general"]
+    size = lt.size(platform)
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = {"TV Shows": 0, "Movies":0}
+
+    for content in lt.iterator(platform):
+        if nameAutor.lower() in content["cast"].lower():
+            print(nameAutor)
+            lt.addLast(sub, content)
+            if content["type"] == "TV Show":
+                all_registers['TV Shows'] += 1
+            elif content["type"] == "Movie":
+                all_registers['Movies'] += 1
+    return all_registers, sub
+                        
 def moviesInYears(catalog, initial_year, final_year):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
@@ -178,9 +194,9 @@ def cmpMoviesByReleaseYear(movie1, movie2):
     duration1 = movie1["duration"].split()
     duration2 = movie2["duration"].split()
 
-    if ((movie1['release_year']) < (movie2['release_year'])):
+    if (int(movie1['release_year']) < int(movie2['release_year'])):
             respuesta = True
-    elif  ((movie1['release_year']) == (movie2['release_year'])):
+    elif  (int(movie1['release_year']) == int(movie2['release_year'])):
         if (movie1['title']) < (movie2['title']):
             respuesta = True 
         elif  (movie1['title']) == (movie2['title']):
