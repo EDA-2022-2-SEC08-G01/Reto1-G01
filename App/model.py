@@ -102,6 +102,20 @@ def firstAndLast(catalog):
                 lt.addLast(firstLast, last)
     return firstLast
 
+
+def firstLastSub(sub):
+    firstLast = lt.newList("ARRAY_LIST")
+    
+    for content in lt.iterator(sub):
+        index = lt.size(sub)
+        for pos in range(1,3):
+            first = lt.getElement(sub, pos)
+            last = lt.getElement(sub, index - pos)
+            lt.addFirst(firstLast, first)
+            lt.addLast(firstLast, last)
+            mgs.sort(firstLast, cmpMoviesByReleaseYear)
+    return firstLast
+
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
@@ -171,12 +185,11 @@ def directorInvolved(catalog, director):
                             genre_registers[genre] += 1
                         else:
                             genre_registers[genre] += 1
-            
-            
-            
-
-
-    return type_registers, service_registers, genre_registers
+                    lt.addLast(sub, content)
+    print(lt.size(sub))
+    if lt.size(sub) >= 6:
+        sub = firstLastSub(sub)
+    return type_registers, service_registers, genre_registers, sub
 
 
 
