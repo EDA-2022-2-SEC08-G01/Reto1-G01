@@ -76,7 +76,6 @@ def loadTitles(catalog, sampleSize):
     return register, all_registers
 
 control = newController("ARRAY_LIST")
-#print(loadTitles(control["model"], 5))
 
 def loadData(control, sampleSize):
     catalog = control["model"]
@@ -113,4 +112,6 @@ def findContentByActor(control, nameAutor):
 def moviesInYears(control, initial_year, final_year):
     return model.moviesInYears(control["model"], initial_year, final_year)
 
+def directorInvolved(control, director):
+    return model.directorInvolved(control["model"], director)
 

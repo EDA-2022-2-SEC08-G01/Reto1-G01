@@ -102,19 +102,44 @@ def firstAndLast(catalog):
                 lt.addLast(firstLast, last)
     return firstLast
 
+
+def firstLastSub(sub):
+    firstLast = lt.newList("ARRAY_LIST")
+    
+    for content in lt.iterator(sub):
+        index = lt.size(sub)
+        for pos in range(1,3):
+            first = lt.getElement(sub, pos)
+            last = lt.getElement(sub, index - pos)
+            lt.addFirst(firstLast, first)
+            lt.addLast(firstLast, last)
+            mgs.sort(firstLast, cmpMoviesByReleaseYear)
+    return firstLast
+    
+def moviesInYears(catalog, initial_year, final_year):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = 0
+    for content in lt.iterator(platform):
+        
+        if content["type"] == "Movie":
+            if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
+                lt.addLast(sub, content)
+                all_registers += 1
+    return sub, all_registers
+
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
-    size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
     all_registers = {"TV Shows": 0, "Movies": 0}
     for content in lt.iterator(platform):
         if content["country"].lower() == country.lower():
-            print(content)
+            
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_registers['TV Shows'] += 1
+                all_registers["TV Shows"] += 1
             elif content["type"] == "Movie":
-                all_registers['Movies'] += 1
+                all_registers["Movies"] += 1
             
     return all_registers, sub
 
@@ -154,17 +179,40 @@ def findContentByActor(catalog, nameAutor):
                 all_registers['Movies'] += 1
     return all_registers, sub
                         
-def moviesInYears(catalog, initial_year, final_year):
-    platform = catalog["general"]
+
+def directorInvolved(catalog, director):
+    #platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    all_registers = 0
-    for content in lt.iterator(platform):
-        
-        if content["type"] == "Movie":
-            if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
-                lt.addLast(sub, content)
-                all_registers += 1
-    return sub, all_registers
+    type_registers = {"TV Shows": 0, "Movies": 0}
+    service_registers = {}
+    genre_registers = {}
+
+    for platform in catalog:
+        count_service = 0
+        if platform != "general":
+            for content in lt.iterator(catalog[platform]):
+                directors = content["director"].lower().split(",") #en caso de haber más de un director se realiza el split
+                if director.lower() in directors: #se comprueba que el director esté 
+                    if content["type"] == "Movie": #se comprueba si el tipo es película o serie y se le suma uno
+                        type_registers["Movies"] += 1
+                    elif content["type"] == "TV Show":
+                        type_registers["TV Shows"] += 1
+                    count_service += 1
+                    service_registers[platform] = count_service #se le suma uno al diccionario de conteo de servicios
+                    listed = content["listed_in"].split(", ") #se realiza el split de los géneros por si hay más de uno
+                    for genre in listed: #se itera sobre los géneros para hacer el conteo
+                        if genre not in genre_registers:
+                            genre_registers[genre] = 0
+                            genre_registers[genre] += 1
+                        else:
+                            genre_registers[genre] += 1
+                    lt.addLast(sub, content)
+    if lt.size(sub) >= 6:
+        sub = firstLastSub(sub)
+    return type_registers, service_registers, genre_registers, sub
+
+
+
 
 
 def platformSize(platform):
@@ -173,6 +221,10 @@ def platformSize(platform):
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
+
+
+
+
 def cmpMoviesByReleaseYear(movie1, movie2):
     """
     Devuelve verdadero (True) si el release_year de movie1 son menores que los
