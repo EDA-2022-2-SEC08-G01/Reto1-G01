@@ -29,7 +29,7 @@ import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
-import pandas as pd
+#import pandas as pd
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
 
@@ -126,6 +126,15 @@ while True:
         sub, ar = controller.moviesInYears(control, initial_year, final_year)
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
         print(sub)
+    
+    elif int(inputs[0]) == 3:
+        initialDate = input("Ingrese la fecha inicial del periodo: ")
+        finalDate = input("Ingrese la fecha final del periodo: ")
+        sub, ar = controller.TvShowsInPeriod(control, initialDate, finalDate)
+        print("Hay " + str(ar) +" series estrenadas entre " + str(initialDate) + " y " + str(finalDate))
+        print(sub)
+
+
     
     elif int(inputs[0]) == 4:
         nameAutor = input("\nIngrese el nombre del autor que desea buscar: ")

@@ -112,6 +112,9 @@ def findContentByActor(control, nameAutor):
 def moviesInYears(control, initial_year, final_year):
     return model.moviesInYears(control["model"], initial_year, final_year)
 
+def TvShowsInPeriod(control, initialDate, finalDate):
+    return model.TvShowsInPeriod(control["model"], initialDate, finalDate)
+
 def directorInvolved(control, director):
     return model.directorInvolved(control["model"], director)
 

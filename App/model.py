@@ -129,6 +129,38 @@ def moviesInYears(catalog, initial_year, final_year):
     
     return sub, all_registers
 
+def TvShowsInPeriod(catalog, initialDate, finalDate):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = 0
+    for content in lt.iterator(platform):
+        if len(content["date_added"])>0:
+            date_added= content["date_added"].replace("-",",")
+            tupla= tuple(date_added)
+            fecha= int(tupla[0]),int(tupla[1]),int(tupla[2])
+            if Numbermonths(initialDate) <= fecha <= Numbermonths(finalDate):
+                lt.addLast(sub, content)
+                all_registers += 1
+    return sub, all_registers
+
+def Numbermonths(date):
+    months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
+    'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 
+    'October': 10, 'November': 11, 'December': 12}
+    date = date.replace(',', ' ')
+    date = date.split(' ')
+
+    day = date[1]
+    month = date[0]
+    year = date[2]
+
+    if day < '10':
+        day = int(day[1])
+    return (int(year), month, day)
+
+
+    
+
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
@@ -257,7 +289,25 @@ def platformSize(platform):
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
 
+def cmpTvShowsByDateAdded(tvshow1, tvshow2):
+    respuesta = False
 
+    duration1 = tvshow1["duration"].split()
+    duration2 = tvshow2["duration"].split()
+    date_added1 = tvshow1["date_added"].split()
+    date_added2 = tvshow2["date_added"].split()
+
+    if len(date_added1) > 0 and len(date_added2) > 0:
+        if (int(date_added1[0])> int(date_added2[0])):
+            respuesta= True
+        elif  (int(date_added1[0]) == int(date_added2[0])):
+            if (tvshow1['title']) < (tvshow2['title']):
+                respuesta = True 
+            elif  (tvshow1['title']) == (tvshow2['title']):
+                if len(duration1) > 0 and len(duration2) > 0:
+                    if (int(duration1[0]) < int(duration2[0])):
+                        respuesta = True
+    return respuesta
 
 
 def cmpMoviesByReleaseYear(movie1, movie2):
@@ -345,3 +395,42 @@ def deltaTime(start, end):
     """
     elapsed = float(end - start)
     return elapsed
+
+
+#Funciones adicionales
+
+def months(monthCsv, monthParametro):
+    mothCsv = monthCsv.lower()
+    monthParametro = monthParametro.lower()
+    resp=0
+    if monthCsv == "01" and monthParametro == "enero":
+        resp = 1
+    elif monthCsv == "02" and monthParametro == "febrero":
+        resp = 2
+    elif monthCsv == "03" and monthParametro == "marzo":
+        resp = 3
+    elif monthCsv == "04" and monthParametro == "abril":
+        resp = 4
+    elif monthCsv == "05" and monthParametro == "mayo":
+        resp = 5
+    elif monthCsv == "06" and monthParametro == "junio":
+        resp = 6
+    elif monthCsv == "07" and monthParametro == "julio":
+        resp = 7
+    elif monthCsv == "08" and monthParametro == "agosto":
+        resp = 8
+    elif monthCsv == "09" and monthParametro == "septiembre":
+        resp = 9
+    elif monthCsv == "10" and monthParametro == "octubre":
+        resp = 10
+    elif monthCsv == "11" and monthParametro == "noviembre":
+        resp = 11
+    elif monthCsv == "12" and monthParametro == "diciembre":
+        resp = 12
+    return resp
+    
+    
+    
+
+
+
