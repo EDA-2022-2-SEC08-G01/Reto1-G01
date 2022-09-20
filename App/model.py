@@ -114,25 +114,30 @@ def firstLastSub(sub):
             lt.addFirst(firstLast, first)
             lt.addLast(firstLast, last)
             mgs.sort(firstLast, cmpMoviesByReleaseYear)
+    
     return firstLast
     
 def moviesInYears(catalog, initial_year, final_year):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
     all_registers = 0
+    start_time = getTime()
     for content in lt.iterator(platform):
         
         if content["type"] == "Movie":
             if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
                 lt.addLast(sub, content)
                 all_registers += 1
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
     
-    return sub, all_registers
+    return sub, all_registers,delta_time
 
 def TvShowsInPeriod(catalog, initialDate, finalDate):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
     all_registers = 0
+    start_time = getTime()
     for content in lt.iterator(platform):
         if len(content["date_added"])>0:
             date_added= content["date_added"].replace("-",",")
@@ -141,30 +146,15 @@ def TvShowsInPeriod(catalog, initialDate, finalDate):
             if Numbermonths(initialDate) <= fecha <= Numbermonths(finalDate):
                 lt.addLast(sub, content)
                 all_registers += 1
-    return sub, all_registers
-
-def Numbermonths(date):
-    months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
-    'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 
-    'October': 10, 'November': 11, 'December': 12}
-    date = date.replace(',', ' ')
-    date = date.split(' ')
-
-    day = date[1]
-    month = date[0]
-    year = date[2]
-
-    if day < '10':
-        day = int(day[1])
-    return (int(year), month, day)
-
-
-    
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return sub, all_registers, delta_time
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
     all_registers = {"TV Shows": 0, "Movies": 0}
+    start_time = getTime()
     for content in lt.iterator(platform):
         if content["country"].lower() == country.lower():
             
@@ -172,10 +162,11 @@ def findContentByCountry(catalog, country):
             if content["type"] == "TV Show":
                 all_registers["TV Shows"] += 1
             elif content["type"] == "Movie":
-                all_registers["Movies"] += 1
-            
+                all_registers["Movies"] += 1 
     mgs.sort(sub, cmpByTitle)
-    return all_registers, sub
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return all_registers, sub, delta_time
 
 
 def findContentByGenre(catalog, genre):
@@ -184,6 +175,7 @@ def findContentByGenre(catalog, genre):
     sub = lt.newList("ARRAY_LIST")
     register_movie = 0
     register_series = 0
+    start_time = getTime()
     for content in lt.iterator(platform):
         if genre.lower() in content["listed_in"].lower():
             lt.addLast(sub,content)
@@ -195,7 +187,9 @@ def findContentByGenre(catalog, genre):
     sizesub = lt.size(sub)
     first_3 = lt.subList(sub,1, 3)
     last_3 = lt.subList(sub,sizesub-3, 3)
-    return (first_3, last_3, register_series, register_movie)
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return (first_3, last_3, register_series, register_movie), delta_time
 
 
 def findContentByActor(catalog, nameAutor):
@@ -204,6 +198,7 @@ def findContentByActor(catalog, nameAutor):
     sub = lt.newList("ARRAY_LIST")
     all_registers = {"TV Shows": 0, "Movies":0}
 
+    start_time = getTime()
     for content in lt.iterator(platform):
         if nameAutor.lower() in content["cast"].lower():
             
@@ -213,7 +208,9 @@ def findContentByActor(catalog, nameAutor):
             elif content["type"] == "Movie":
                 all_registers['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
-    return all_registers, sub
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return all_registers, sub, delta_time
                         
 
 def directorInvolved(catalog, director):
@@ -223,6 +220,7 @@ def directorInvolved(catalog, director):
     service_registers = {}
     genre_registers = {}
 
+    start_time = getTime()
     for platform in catalog:
         count_service = 0
         if platform != "general":
@@ -245,7 +243,9 @@ def directorInvolved(catalog, director):
                     lt.addLast(sub, content)
     if lt.size(sub) >= 6:
         sub = firstLastSub(sub)
-    return type_registers, service_registers, genre_registers, sub
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return type_registers, service_registers, genre_registers, sub, delta_time
 
 def topGenders(catalog, top):
     n_gender = {}
@@ -254,6 +254,7 @@ def topGenders(catalog, top):
     service_registers = {}
     general_registers = {}
     general = catalog["general"]
+    start_time = getTime()
     for content in lt.iterator(general):
         listed = content["listed_in"].split(", ") #se separan los géneros
         for i in listed: #se itera sobre la lista, i toma el valor de cada génerp
@@ -274,13 +275,9 @@ def topGenders(catalog, top):
         else:
             service_registers[content["streaming_service"]] += 1
         
-        
-    return all_genders
-
-
-
-
-
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return all_genders, delta_time
 
 def platformSize(platform):
     return lt.size(platform)
@@ -398,36 +395,21 @@ def deltaTime(start, end):
 
 
 #Funciones adicionales
+def Numbermonths(date):
+    months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
+    'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 
+    'October': 10, 'November': 11, 'December': 12}
+    date = date.replace(',', ' ')
+    date = date.split(' ')
 
-def months(monthCsv, monthParametro):
-    mothCsv = monthCsv.lower()
-    monthParametro = monthParametro.lower()
-    resp=0
-    if monthCsv == "01" and monthParametro == "enero":
-        resp = 1
-    elif monthCsv == "02" and monthParametro == "febrero":
-        resp = 2
-    elif monthCsv == "03" and monthParametro == "marzo":
-        resp = 3
-    elif monthCsv == "04" and monthParametro == "abril":
-        resp = 4
-    elif monthCsv == "05" and monthParametro == "mayo":
-        resp = 5
-    elif monthCsv == "06" and monthParametro == "junio":
-        resp = 6
-    elif monthCsv == "07" and monthParametro == "julio":
-        resp = 7
-    elif monthCsv == "08" and monthParametro == "agosto":
-        resp = 8
-    elif monthCsv == "09" and monthParametro == "septiembre":
-        resp = 9
-    elif monthCsv == "10" and monthParametro == "octubre":
-        resp = 10
-    elif monthCsv == "11" and monthParametro == "noviembre":
-        resp = 11
-    elif monthCsv == "12" and monthParametro == "diciembre":
-        resp = 12
-    return resp
+    day = date[1]
+    month = date[0]
+    year = date[2]
+
+    if day < '10':
+        day = int(day[1])
+    return (int(year), month, day)
+
     
     
     

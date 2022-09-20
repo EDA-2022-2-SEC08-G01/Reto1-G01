@@ -123,28 +123,35 @@ while True:
     elif int(inputs[0]) == 2:
         initial_year = int(input("Ingrese el año inicial del periodo: "))
         final_year = int(input("Ingrese el año final del periodo: "))
-        sub, ar = controller.moviesInYears(control, initial_year, final_year)
+        sub, ar , delt= controller.moviesInYears(control, initial_year, final_year)
+        delta_time = delt
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
         print(sub)
+        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
     
     elif int(inputs[0]) == 3:
         initialDate = input("Ingrese la fecha inicial del periodo: ")
         finalDate = input("Ingrese la fecha final del periodo: ")
-        sub, ar = controller.TvShowsInPeriod(control, initialDate, finalDate)
+        sub, ar, delt = controller.TvShowsInPeriod(control, initialDate, finalDate)
+        delta_time = delt
         print("Hay " + str(ar) +" series estrenadas entre " + str(initialDate) + " y " + str(finalDate))
         print(sub)
+        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
 
 
     
     elif int(inputs[0]) == 4:
         nameAutor = input("\nIngrese el nombre del autor que desea buscar: ")
-        register, contentByAutor = controller.findContentByActor(control, nameAutor)
+        register, contentByAutor, delt = controller.findContentByActor(control, nameAutor)
+        delta_time = delt
         print(nameAutor.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
         print("Los tres primeros, tres ultimos encontrados y su informacion son:\n " , "\n", contentByAutor["elements"])
-    
+        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
+
     elif int(inputs[0]) == 5:
         genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
-        ans = controller.findContentByGenre(control, genre)
+        ans, delt = controller.findContentByGenre(control, genre)
+        delta_time = delt
         print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
         prim3 =[]
         last3 =[]
@@ -156,15 +163,19 @@ while True:
         df2 = pd.DataFrame(last3)
         print(tabulate(df1,headers='keys',tablefmt='fancy_grid'))
         print(tabulate(df2,headers='keys',tablefmt='fancy_grid'))
+
+        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
         
 
 
 
     elif int(inputs[0]) == 6:
         country = input("Ingrese el país que desea buscar: ")
-        register, contentByCountry = controller.findContentByCountry(control, country)
+        register, contentByCountry, delt = controller.findContentByCountry(control, country)
+        delta_time = delt
         print(register)
         print(contentByCountry)
+        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
     
     elif int(inputs[0]) == 7:
         director = input("Ingrese el director que desea buscar: ")
