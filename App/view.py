@@ -128,10 +128,10 @@ while True:
         print(sub)
     
     elif int(inputs[0]) == 4:
-        nameAutor = input("Ingrese el nombre del autor que desea buscar: ")
+        nameAutor = input("\nIngrese el nombre del autor que desea buscar: ")
         register, contentByAutor = controller.findContentByActor(control, nameAutor)
-        print(register)
-        print(contentByAutor)
+        print(nameAutor.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
+        print("Los tres primeros, tres ultimos encontrados y su informacion son:\n " , "\n", contentByAutor["elements"])
     
     elif int(inputs[0]) == 5:
         genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
