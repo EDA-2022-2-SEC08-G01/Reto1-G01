@@ -171,7 +171,7 @@ def findContentByActor(catalog, nameAutor):
 
     for content in lt.iterator(platform):
         if nameAutor.lower() in content["cast"].lower():
-            print(nameAutor)
+            
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
                 all_registers['TV Shows'] += 1
