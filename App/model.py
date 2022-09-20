@@ -143,6 +143,26 @@ def findContentByCountry(catalog, country):
             
     return all_registers, sub
 
+
+def findContentByGenre(catalog, genre):
+    platform = catalog["general"]
+    size = lt.size(platform)
+    sub = lt.newList("ARRAY_LIST")
+    register_movie = 0
+    register_series = 0
+    for content in lt.iterator(platform):
+        if genre.lower() in content["listed_in"].lower():
+            lt.addLast(sub,content)
+            if content["type"] == "TV Show":
+                register_series +=1
+            elif content["type"]== "Movie":
+                register_movie +=1
+    sizesub = lt.size(sub)
+    first_3 = lt.subList(sub,1, 3)
+    last_3 = lt.subList(sub,sizesub-3, 3)
+    return (first_3, last_3, register_series, register_movie)
+
+
 def findContentByActor(catalog, nameAutor):
     platform = catalog["general"]
     size = lt.size(platform)

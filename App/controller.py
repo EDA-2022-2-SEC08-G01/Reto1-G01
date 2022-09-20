@@ -98,9 +98,13 @@ def sortCatalog(control, order):
 def firstAndLast(catalog):
     return model.firstAndLast(catalog)
 
+def findContentByGenre(control, genre):
+    return model.findContentByGenre(control["model"], genre)
+
 
 def findContentByCountry(control, country):
     return model.findContentByCountry(control["model"], country)
+
 
 def findContentByActor(control, nameAutor):
     return model.findContentByActor(control["model"], nameAutor)
