@@ -191,6 +191,36 @@ def directorInvolved(catalog, director):
         sub = firstLastSub(sub)
     return type_registers, service_registers, genre_registers, sub
 
+def topGenders(catalog, top):
+    n_gender = {}
+    type_registers = {"TV Shows": 0, "Movies": 0}
+    all_genders = {}
+    service_registers = {}
+    general_registers = {}
+    general = catalog["general"]
+    for content in lt.iterator(general):
+        if content["listed_in"] not in all_genders:
+            all_genders[content["listed_in"]] = 0
+            all_genders[content["listed_in"]] += 1
+        else:
+            all_genders[content["listed_in"]] += 1
+        
+        if content["type"] == "Movie":
+            type_registers["Movies"] += 1
+        elif content["type"] == "TV Show":
+            type_registers["TV Shows"] += 1
+
+        if content["streaming_service"] not in service_registers:
+            service_registers[content["streaming_service"]] = 0
+            service_registers[content["streaming_service"]] += 1
+        else:
+            service_registers[content["streaming_service"]] += 1
+        
+        listed = content["listed_in"].split(", ")
+        
+
+
+
 
 
 
