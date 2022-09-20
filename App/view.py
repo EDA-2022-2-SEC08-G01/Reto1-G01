@@ -22,12 +22,14 @@
 
 from atexit import register
 from pyexpat import model
+from wsgiref import headers
 import config as cf
 import sys
 import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
+import pandas as pd
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
 
@@ -135,7 +137,18 @@ while True:
         genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
         ans = controller.findContentByGenre(control, genre)
         print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
-        print(ans[0] and ans[1])
+        prim3 =[]
+        last3 =[]
+        for i in lt.iterator(ans[0]):
+            prim3.append(i) 
+        for a in lt.iterator(ans[1]):
+            last3.append(a)
+        df1 = pd.DataFrame(prim3)
+        df2 = pd.DataFrame(last3)
+        print(tabulate(df1,headers='keys',tablefmt='fancy_grid'))
+        print(tabulate(df2,headers='keys',tablefmt='fancy_grid'))
+        
+
 
 
     elif int(inputs[0]) == 6:
