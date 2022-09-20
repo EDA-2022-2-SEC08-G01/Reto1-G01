@@ -162,6 +162,12 @@ while True:
         tr, sr, gr, sub = controller.directorInvolved(control, director)
         print(tr, sr, gr, sub)
 
+    elif int(inputs[0]) == 8:
+        top = input("Ingrese el TOP N que desea conocer: ")
+        ag = controller.topGenders(control, top)
+        print(ag)
+
+
     elif int(inputs[0]) == 9:
         
 

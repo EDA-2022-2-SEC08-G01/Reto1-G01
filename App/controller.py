@@ -115,3 +115,5 @@ def moviesInYears(control, initial_year, final_year):
 def directorInvolved(control, director):
     return model.directorInvolved(control["model"], director)
 
+def topGenders(control, top):
+    return model.topGenders(control["model"], top)

@@ -126,6 +126,7 @@ def moviesInYears(catalog, initial_year, final_year):
             if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
                 lt.addLast(sub, content)
                 all_registers += 1
+    
     return sub, all_registers
 
 def findContentByCountry(catalog, country):
@@ -141,6 +142,7 @@ def findContentByCountry(catalog, country):
             elif content["type"] == "Movie":
                 all_registers["Movies"] += 1
             
+    mgs.sort(sub, cmpByTitle)
     return all_registers, sub
 
 
@@ -157,6 +159,7 @@ def findContentByGenre(catalog, genre):
                 register_series +=1
             elif content["type"]== "Movie":
                 register_movie +=1
+    mgs.sort(sub, cmpByTitle)
     sizesub = lt.size(sub)
     first_3 = lt.subList(sub,1, 3)
     last_3 = lt.subList(sub,sizesub-3, 3)
@@ -177,6 +180,7 @@ def findContentByActor(catalog, nameAutor):
                 all_registers['TV Shows'] += 1
             elif content["type"] == "Movie":
                 all_registers['Movies'] += 1
+    mgs.sort(sub, cmpByTitle)
     return all_registers, sub
                         
 
@@ -219,12 +223,14 @@ def topGenders(catalog, top):
     general_registers = {}
     general = catalog["general"]
     for content in lt.iterator(general):
-        if content["listed_in"] not in all_genders:
-            all_genders[content["listed_in"]] = 0
-            all_genders[content["listed_in"]] += 1
-        else:
-            all_genders[content["listed_in"]] += 1
-        
+        listed = content["listed_in"].split(", ") #se separan los géneros
+        for i in listed: #se itera sobre la lista, i toma el valor de cada génerp
+            if i not in all_genders: #se añade al diccionario de géneros en caso de que no esté
+                all_genders[i] = 0
+                all_genders[i] += 1
+            else:
+                all_genders[i] += 1
+            
         if content["type"] == "Movie":
             type_registers["Movies"] += 1
         elif content["type"] == "TV Show":
@@ -236,9 +242,8 @@ def topGenders(catalog, top):
         else:
             service_registers[content["streaming_service"]] += 1
         
-        listed = content["listed_in"].split(", ")
         
-
+    return all_genders
 
 
 
@@ -282,6 +287,19 @@ def cmpMoviesByReleaseYear(movie1, movie2):
                 if (int(duration1[0]) < int(duration2[0])):
                     respuesta = True
     return respuesta
+
+def cmpByTitle(movie1, movie2):
+    respuesta = False
+    if movie1["title"] < movie2["title"]:
+        respuesta = True
+    elif movie1["title"] == movie2["title"]:
+        if int(movie1["release_year"]) < int(movie2["release_year"]):
+            respuesta = True
+        elif int(movie1["release_year"]) == int(movie2["release_year"]):
+            if movie1["director"] < movie2["director"]:
+                respuesta = True
+    return respuesta
+
 
 def choosingSorts(catalog, orderType):
     platform = catalog["general"]
