@@ -37,6 +37,7 @@ from DISClib.Algorithms.Sorting import mergesort as mgs
 from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
+import copy
 import pandas as pd
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -164,7 +165,7 @@ def findContentByCountry(catalog, country):
             
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_cs["TV Shows"] += 1
+                all_registers["TV Shows"] += 1
             elif content["type"] == "Movie":
                 all_registers["Movies"] += 1 
     mgs.sort(sub, cmpByTitle)
@@ -203,7 +204,7 @@ def findContentByActor(catalog, nameAutor):
     platform = catalog["general"]
     size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
-    all_cs = {"TV Shows": 0, "Movies":0}
+    all_registers = {"TV Shows": 0, "Movies":0}
 
     start_time = getTime()
     for content in lt.iterator(platform):
@@ -211,9 +212,9 @@ def findContentByActor(catalog, nameAutor):
             
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_cs['TV Shows'] += 1
+                all_registers['TV Shows'] += 1
             elif content["type"] == "Movie":
-                all_cs['Movies'] += 1
+                all_registers['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
     final = manipularlista(sub)
     end_time = getTime()
@@ -224,9 +225,9 @@ def findContentByActor(catalog, nameAutor):
 def directorInvolved(catalog, director):
     #platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    type_cs = {"TV Shows": 0, "Movies": 0}
-    service_cs = {}
-    genre_cs = {}
+    type_registers = {"TV Shows": 0, "Movies": 0}
+    service_registers = {}
+    genre_registers = {}
 
     start_time = getTime()
     for platform in catalog:
