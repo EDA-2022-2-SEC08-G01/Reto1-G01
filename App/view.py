@@ -169,7 +169,7 @@ while True:
         delta_time = delt
         print(country.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
         print(contentByCountry)
-        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
+        print("\n Para este requerimiento, delta tiem   po:", str(delta_time))
     
     elif int(inputs[0]) == 7:
         director = input("Ingrese el director que desea buscar: ")
