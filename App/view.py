@@ -153,17 +153,13 @@ while True:
         ans, delt = controller.findContentByGenre(control, genre)
         delta_time = delt
         print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
-        prim3 =[]
-        last3 =[]
+        listafinal =[]
         for i in lt.iterator(ans[0]):
-            prim3.append(i) 
+            listafinal.append(i) 
         for a in lt.iterator(ans[1]):
-            last3.append(a)
-        df1 = pd.DataFrame(prim3)
-        df2 = pd.DataFrame(last3)
-        print(tabulate(df1,headers='keys',tablefmt='fancy_grid'))
-        print(tabulate(df2,headers='keys',tablefmt='fancy_grid'))
-
+            listafinal.append(a)
+        df = pd.DataFrame(listafinal)
+        print(tabulate(df,headers='keys',tablefmt='fancy_grid'))
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
         
 
