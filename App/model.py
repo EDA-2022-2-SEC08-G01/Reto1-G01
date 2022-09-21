@@ -25,6 +25,7 @@
  """
 
 
+from atexit import register
 from doctest import ELLIPSIS_MARKER
 from tempfile import gettempdir
 import config as cf
@@ -36,6 +37,7 @@ from DISClib.Algorithms.Sorting import mergesort as mgs
 from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
+import copy
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -51,8 +53,8 @@ def newCatalog(structure):
         'general': None
     }
     for platform in catalog:
-        catalog[platform] = lt.newList(structure)
-        #ins.sort(catalog[platform], cmpMoviesByReleaseYear)
+        catalog[platform] = lt.newList(structure,cmpfunction = cmpID)
+        
     return catalog 
 
 
@@ -119,77 +121,77 @@ def firstLastSub(sub):
 def moviesInYears(catalog, initial_year, final_year):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    all_registers = 0
+    all_cs = 0
     for content in lt.iterator(platform):
         
         if content["type"] == "Movie":
             if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
                 lt.addLast(sub, content)
-                all_registers += 1
+                all_cs += 1
     
-    return sub, all_registers
+    return sub, all_cs
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    all_registers = {"TV Shows": 0, "Movies": 0}
+    all_cs = {"TV Shows": 0, "Movies": 0}
     for content in lt.iterator(platform):
         if content["country"].lower() == country.lower():
             
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_registers["TV Shows"] += 1
+                all_cs["TV Shows"] += 1
             elif content["type"] == "Movie":
-                all_registers["Movies"] += 1
+                all_cs["Movies"] += 1
             
     mgs.sort(sub, cmpByTitle)
-    return all_registers, sub
+    return all_cs, sub
 
 
 def findContentByGenre(catalog, genre):
     platform = catalog["general"]
     size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
-    register_movie = 0
-    register_series = 0
+    c_movie = 0
+    c_series = 0
     for content in lt.iterator(platform):
         if genre.lower() in content["listed_in"].lower():
             lt.addLast(sub,content)
             if content["type"] == "TV Show":
-                register_series +=1
+                c_series +=1
             elif content["type"]== "Movie":
-                register_movie +=1
+                c_movie +=1
     mgs.sort(sub, cmpByTitle)
     sizesub = lt.size(sub)
     first_3 = lt.subList(sub,1, 3)
     last_3 = lt.subList(sub,sizesub-3, 3)
-    return (first_3, last_3, register_series, register_movie)
+    return (first_3, last_3, c_series, c_movie)
 
 
 def findContentByActor(catalog, nameAutor):
     platform = catalog["general"]
     size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
-    all_registers = {"TV Shows": 0, "Movies":0}
+    all_cs = {"TV Shows": 0, "Movies":0}
 
     for content in lt.iterator(platform):
         if nameAutor.lower() in content["cast"].lower():
             
             lt.addLast(sub, content)
             if content["type"] == "TV Show":
-                all_registers['TV Shows'] += 1
+                all_cs['TV Shows'] += 1
             elif content["type"] == "Movie":
-                all_registers['Movies'] += 1
+                all_cs['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
-    return all_registers, sub
+    return all_cs, sub
                         
 
 def directorInvolved(catalog, director):
     #platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    type_registers = {"TV Shows": 0, "Movies": 0}
-    service_registers = {}
-    genre_registers = {}
+    type_cs = {"TV Shows": 0, "Movies": 0}
+    service_cs = {}
+    genre_cs = {}
 
     for platform in catalog:
         count_service = 0
@@ -198,53 +200,76 @@ def directorInvolved(catalog, director):
                 directors = content["director"].lower().split(",") #en caso de haber más de un director se realiza el split
                 if director.lower() in directors: #se comprueba que el director esté 
                     if content["type"] == "Movie": #se comprueba si el tipo es película o serie y se le suma uno
-                        type_registers["Movies"] += 1
+                        type_cs["Movies"] += 1
                     elif content["type"] == "TV Show":
-                        type_registers["TV Shows"] += 1
+                        type_cs["TV Shows"] += 1
                     count_service += 1
-                    service_registers[platform] = count_service #se le suma uno al diccionario de conteo de servicios
+                    service_cs[platform] = count_service #se le suma uno al diccionario de conteo de servicios
                     listed = content["listed_in"].split(", ") #se realiza el split de los géneros por si hay más de uno
                     for genre in listed: #se itera sobre los géneros para hacer el conteo
-                        if genre not in genre_registers:
-                            genre_registers[genre] = 0
-                            genre_registers[genre] += 1
+                        if genre not in genre_cs:
+                            genre_cs[genre] = 0
+                            genre_cs[genre] += 1
                         else:
-                            genre_registers[genre] += 1
+                            genre_cs[genre] += 1
                     lt.addLast(sub, content)
     if lt.size(sub) >= 6:
         sub = firstLastSub(sub)
-    return type_registers, service_registers, genre_registers, sub
+    return type_cs, service_cs, genre_cs, sub
 
 def topGenders(catalog, top):
-    n_gender = {}
-    type_registers = {"TV Shows": 0, "Movies": 0}
-    all_genders = {}
-    service_registers = {}
-    general_registers = {}
+    ans = lt.newList("ARRAY_LIST", cmpfunction=cmpGenre)
     general = catalog["general"]
+    register = {"Genre": "", "Movies": 0, "TV Shows": 0, "Netflix": 0, "Disney plus": 0, "Hulu": 0, "Amazon prime": 0, "total": 0}
     for content in lt.iterator(general):
-        listed = content["listed_in"].split(", ") #se separan los géneros
-        for i in listed: #se itera sobre la lista, i toma el valor de cada génerp
-            if i not in all_genders: #se añade al diccionario de géneros en caso de que no esté
-                all_genders[i] = 0
-                all_genders[i] += 1
-            else:
-                all_genders[i] += 1
-            
-        if content["type"] == "Movie":
-            type_registers["Movies"] += 1
-        elif content["type"] == "TV Show":
-            type_registers["TV Shows"] += 1
+        c = copy.deepcopy(register)
+        listed = content["listed_in"].lower().split(",")
 
-        if content["streaming_service"] not in service_registers:
-            service_registers[content["streaming_service"]] = 0
-            service_registers[content["streaming_service"]] += 1
-        else:
-            service_registers[content["streaming_service"]] += 1
         
-        
-    return all_genders
-
+        for gender in listed:
+                gender = gender.strip()
+                        
+                c["Genre"] = gender
+                if lt.isPresent(ans, c) == 0:
+                    if content["type"] == "Movie":
+                        c["Movies"] += 1
+                    elif content["type"] == "TV Show":
+                        c["TV Shows"] += 1
+                        
+                    if content["streaming_service"].lower() == "netflix":
+                        c["Netflix"] += 1
+                    elif content["streaming_service"].lower() == "amazon_prime":
+                        c["Amazon prime"] += 1
+                    elif content["streaming_service"].lower() == "hulu":
+                        c["Hulu"] += 1
+                    elif content["streaming_service"].lower() == "disney_plus":
+                        c["Disney plus"] += 1    
+                    c["total"] += 1
+                    lt.addLast(ans, c)
+                elif lt.isPresent(ans, c) > 0:
+                    
+                    for gen in lt.iterator(ans):
+                        if gen["Genre"].lower() == gender.lower():   
+                            if content["type"] == "Movie":
+                                gen["Movies"] += 1
+                                
+                            elif content["type"] == "TV Show":
+                                gen["TV Shows"] += 1
+                            
+                            if content["streaming_service"].lower() == "netflix":
+                                gen["Netflix"] += 1
+                            elif content["streaming_service"].lower() == "amazon_prime":
+                                gen["Amazon prime"] += 1
+                            elif content["streaming_service"].lower() == "hulu":
+                                gen["Hulu"] += 1
+                            elif content["streaming_service"].lower() == "disney_plus":
+                                gen["Disney plus"] += 1
+                            gen["total"] += 1
+    mgs.sort(ans, cmpByCount) 
+    size = lt.size(ans) - 1
+    sub = lt.subList(ans, size - top, top )
+  
+    return sub
 
 
 
@@ -254,6 +279,22 @@ def platformSize(platform):
     return lt.size(platform)
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+
+def cmpID(element1, element2):
+    
+    if element1["show_id"] == element2["show_id"]:
+        return 0
+    elif element1["show_id"] > element2["show_id"]:
+        return 1
+    return -1
+
+def cmpGenre(element1, element2):
+    
+    if element1["Genre"] == element2["Genre"]:
+        return 0
+    elif element1["Genre"] > element2["Genre"]:
+        return 1
+    return -1
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
 
@@ -300,6 +341,15 @@ def cmpByTitle(movie1, movie2):
                 respuesta = True
     return respuesta
 
+def cmpByCount(genre1, genre2):
+    respuesta = False
+    if genre1["total"] < genre2["total"]:
+        respuesta = True
+    elif genre1["total"] == genre2["total"]:
+        if genre1["Netflix"] < genre2["Netflix"]:
+            respuesta = True
+    
+    return respuesta 
 
 def choosingSorts(catalog, orderType):
     platform = catalog["general"]
