@@ -37,7 +37,7 @@ from DISClib.Algorithms.Sorting import mergesort as mgs
 from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
-import copy
+import pandas as pd
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -116,25 +116,47 @@ def firstLastSub(sub):
             lt.addFirst(firstLast, first)
             lt.addLast(firstLast, last)
             mgs.sort(firstLast, cmpMoviesByReleaseYear)
+    
     return firstLast
     
 def moviesInYears(catalog, initial_year, final_year):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    all_cs = 0
+    all_registers = 0
+    start_time = getTime()
     for content in lt.iterator(platform):
         
         if content["type"] == "Movie":
             if int(content["release_year"]) >= initial_year and int(content["release_year"]) <=final_year:
                 lt.addLast(sub, content)
-                all_cs += 1
+                all_registers += 1
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
     
-    return sub, all_cs
+    return sub, all_registers,delta_time
+
+def TvShowsInPeriod(catalog, initialDate, finalDate):
+    platform = catalog["general"]
+    sub = lt.newList("ARRAY_LIST")
+    all_registers = 0
+    start_time = getTime()
+    for content in lt.iterator(platform):
+        if len(content["date_added"])>0:
+            date_added= content["date_added"].replace("-",",")
+            tupla= tuple(date_added)
+            fecha= int(tupla[0]),int(tupla[1]),int(tupla[2])
+            if Numbermonths(initialDate) <= fecha <= Numbermonths(finalDate):
+                lt.addLast(sub, content)
+                all_registers += 1
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return sub, all_registers, delta_time
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
     sub = lt.newList("ARRAY_LIST")
-    all_cs = {"TV Shows": 0, "Movies": 0}
+    all_registers = {"TV Shows": 0, "Movies": 0}
+    start_time = getTime()
     for content in lt.iterator(platform):
         if content["country"].lower() == country.lower():
             
@@ -142,30 +164,37 @@ def findContentByCountry(catalog, country):
             if content["type"] == "TV Show":
                 all_cs["TV Shows"] += 1
             elif content["type"] == "Movie":
-                all_cs["Movies"] += 1
-            
+                all_registers["Movies"] += 1 
     mgs.sort(sub, cmpByTitle)
-    return all_cs, sub
+    final = manipularlista(sub)
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return all_registers, final, delta_time
 
 
 def findContentByGenre(catalog, genre):
     platform = catalog["general"]
     size = lt.size(platform)
     sub = lt.newList("ARRAY_LIST")
-    c_movie = 0
-    c_series = 0
+    register_movie = 0
+    register_series = 0
+    start_time = getTime()
     for content in lt.iterator(platform):
         if genre.lower() in content["listed_in"].lower():
             lt.addLast(sub,content)
             if content["type"] == "TV Show":
-                c_series +=1
+                register_series +=1
             elif content["type"]== "Movie":
-                c_movie +=1
+                register_movie +=1
     mgs.sort(sub, cmpByTitle)
-    sizesub = lt.size(sub)
-    first_3 = lt.subList(sub,1, 3)
-    last_3 = lt.subList(sub,sizesub-3, 3)
-    return (first_3, last_3, c_series, c_movie)
+    final = manipularlista(sub)
+    
+    #sizesub = lt.size(sub)
+    #irst_3 = lt.subList(sub,1, 3)
+    #last_3 = lt.subList(sub,sizesub-3, 3)
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return (final, register_series, register_movie), delta_time
 
 
 def findContentByActor(catalog, nameAutor):
@@ -174,6 +203,7 @@ def findContentByActor(catalog, nameAutor):
     sub = lt.newList("ARRAY_LIST")
     all_cs = {"TV Shows": 0, "Movies":0}
 
+    start_time = getTime()
     for content in lt.iterator(platform):
         if nameAutor.lower() in content["cast"].lower():
             
@@ -183,7 +213,10 @@ def findContentByActor(catalog, nameAutor):
             elif content["type"] == "Movie":
                 all_cs['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
-    return all_cs, sub
+    final = manipularlista(sub)
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return all_registers, final, delta_time
                         
 
 def directorInvolved(catalog, director):
@@ -193,6 +226,7 @@ def directorInvolved(catalog, director):
     service_cs = {}
     genre_cs = {}
 
+    start_time = getTime()
     for platform in catalog:
         count_service = 0
         if platform != "general":
@@ -200,27 +234,30 @@ def directorInvolved(catalog, director):
                 directors = content["director"].lower().split(",") #en caso de haber más de un director se realiza el split
                 if director.lower() in directors: #se comprueba que el director esté 
                     if content["type"] == "Movie": #se comprueba si el tipo es película o serie y se le suma uno
-                        type_cs["Movies"] += 1
+                        type_registers["Movies"] += 1
                     elif content["type"] == "TV Show":
-                        type_cs["TV Shows"] += 1
+                        type_registers["TV Shows"] += 1
                     count_service += 1
-                    service_cs[platform] = count_service #se le suma uno al diccionario de conteo de servicios
+                    service_registers[platform] = count_service #se le suma uno al diccionario de conteo de servicios
                     listed = content["listed_in"].split(", ") #se realiza el split de los géneros por si hay más de uno
                     for genre in listed: #se itera sobre los géneros para hacer el conteo
-                        if genre not in genre_cs:
-                            genre_cs[genre] = 0
-                            genre_cs[genre] += 1
+                        if genre not in genre_registers:
+                            genre_registers[genre] = 0
+                            genre_registers[genre] += 1
                         else:
-                            genre_cs[genre] += 1
+                            genre_registers[genre] += 1
                     lt.addLast(sub, content)
     if lt.size(sub) >= 6:
         sub = firstLastSub(sub)
-    return type_cs, service_cs, genre_cs, sub
+    end_time = getTime()
+    delta_time = deltaTime(start_time, end_time)
+    return type_registers, service_registers, genre_registers, sub, delta_time
 
 def topGenders(catalog, top):
     ans = lt.newList("ARRAY_LIST", cmpfunction=cmpGenre)
     general = catalog["general"]
     register = {"Genre": "", "Movies": 0, "TV Shows": 0, "Netflix": 0, "Disney plus": 0, "Hulu": 0, "Amazon prime": 0, "total": 0}
+    start_time = getTime()
     for content in lt.iterator(general):
         c = copy.deepcopy(register)
         listed = content["listed_in"].lower().split(",")
@@ -275,10 +312,13 @@ def topGenders(catalog, top):
 
 
 
-def platformSize(platform):
-    return lt.size(platform)
-
-# Funciones utilizadas para comparar elementos dentro de una lista
+def cmpGenre(element1, element2):
+    
+    if element1["Genre"] == element2["Genre"]:
+        return 0
+    elif element1["Genre"] > element2["Genre"]:
+        return 1
+    return -1
 
 def cmpID(element1, element2):
     
@@ -298,7 +338,25 @@ def cmpGenre(element1, element2):
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
 
+def cmpTvShowsByDateAdded(tvshow1, tvshow2):
+    respuesta = False
 
+    duration1 = tvshow1["duration"].split()
+    duration2 = tvshow2["duration"].split()
+    date_added1 = tvshow1["date_added"].split()
+    date_added2 = tvshow2["date_added"].split()
+
+    if len(date_added1) > 0 and len(date_added2) > 0:
+        if (int(date_added1[0])> int(date_added2[0])):
+            respuesta= True
+        elif  (int(date_added1[0]) == int(date_added2[0])):
+            if (tvshow1['title']) < (tvshow2['title']):
+                respuesta = True 
+            elif  (tvshow1['title']) == (tvshow2['title']):
+                if len(duration1) > 0 and len(duration2) > 0:
+                    if (int(duration1[0]) < int(duration2[0])):
+                        respuesta = True
+    return respuesta
 
 
 def cmpMoviesByReleaseYear(movie1, movie2):
@@ -395,3 +453,38 @@ def deltaTime(start, end):
     """
     elapsed = float(end - start)
     return elapsed
+
+#Función para filtar las listas y unir, y crear un dataframe
+def manipularlista(sub):
+    sizesub = lt.size(sub)
+    first_3 = lt.subList(sub,1, 3)
+    last_3 = lt.subList(sub,sizesub-3, 3)
+    listafinal =[]
+    for i in lt.iterator(first_3):
+        listafinal.append(i) 
+    for a in lt.iterator(last_3):
+        listafinal.append(a)
+    df=pd.DataFrame(listafinal)
+    return df
+#Funciones adicionales
+def Numbermonths(date):
+    months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
+    'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9, 
+    'October': 10, 'November': 11, 'December': 12}
+    date = date.replace(',', ' ')
+    date = date.split(' ')
+
+    day = date[1]
+    month = date[0]
+    year = date[2]
+
+    if day < '10':
+        day = int(day[1])
+    return (int(year), month, day)
+
+    
+    
+    
+
+
+
