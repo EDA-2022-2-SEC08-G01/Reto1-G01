@@ -131,8 +131,9 @@ def moviesInYears(catalog, initial_year, final_year):
                 all_registers += 1
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
+    final = manipularlista(sub)
     
-    return sub, all_registers,delta_time
+    return final, all_registers,delta_time
 
 def TvShowsInPeriod(catalog, initialDate, finalDate):
     platform = catalog["general"]
@@ -149,7 +150,8 @@ def TvShowsInPeriod(catalog, initialDate, finalDate):
                 all_registers += 1
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return sub, all_registers, delta_time
+    final = manipularlista(sub)
+    return final, all_registers, delta_time
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]

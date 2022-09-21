@@ -127,6 +127,7 @@ while True:
         sub, ar , delt= controller.moviesInYears(control, initial_year, final_year)
         delta_time = delt
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parámetros son: ")
         print(sub)
         print("\nPara este requerimiento, delta tiempo:", str(delta_time))
     
@@ -136,6 +137,7 @@ while True:
         sub, ar, delt = controller.TvShowsInPeriod(control, initialDate, finalDate)
         delta_time = delt
         print("Hay " + str(ar) +" series estrenadas entre " + str(initialDate) + " y " + str(finalDate))
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a los parámetros son: ")
         print(sub)
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
 
@@ -157,7 +159,9 @@ while True:
         delta_time = delt
         print(f"Hay un total de {str(ans[1])} series y {str(ans[2])}  peliculas del género -{genre}-")
         df = ans[0]
-        print(tabulate(df,headers='keys',tablefmt='fancy_grid'))
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parámetros son: ")
+        print(df)
+        #print(tabulate(df,headers='keys',tablefmt='fancy_grid'))
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
         
 
@@ -168,6 +172,7 @@ while True:
         register, contentByCountry, delt = controller.findContentByCountry(control, country)
         delta_time = delt
         print(country.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parametros son: ")
         print(contentByCountry)
         print("\n Para este requerimiento, delta tiem   po:", str(delta_time))
     
