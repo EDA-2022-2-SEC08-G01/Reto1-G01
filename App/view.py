@@ -182,7 +182,7 @@ while True:
         print(tr, sr, gr, sub)
 
     elif int(inputs[0]) == 8:
-        top = input("Ingrese el TOP N que desea conocer: ")
+        top = int(input("Ingrese el TOP N que desea conocer: "))
         ag = controller.topGenders(control, top)
         print(ag)
 
