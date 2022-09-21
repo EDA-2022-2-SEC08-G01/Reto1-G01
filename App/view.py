@@ -101,7 +101,7 @@ while True:
             structure = input("Por favor, elija una opcion válida: ")
         
         control = newController(structure)
-        sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '20', '30', '50', '100'): "))
+        sampleSize = int(input("Ingrese el porcentaje de la muestra ('5', '10', '20', '30', '50', '80', '100'): "))
         print("Cargando información de los archivos ....")
         register, ar = loadData(control, sampleSize)
         print(register)
@@ -127,7 +127,7 @@ while True:
         delta_time = delt
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
         print(sub)
-        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
+        print("\nPara este requerimiento, delta tiempo:", str(delta_time))
     
     elif int(inputs[0]) == 3:
         initialDate = input("Ingrese la fecha inicial del periodo: ")
@@ -185,8 +185,6 @@ while True:
 
 
     elif int(inputs[0]) == 9:
-        
-
         orderType = input("Ingrese el ordenamiento a usar ('shell', 'insertion', 'selection', 'merge', 'quick'): ").lower()
         sorted_list, delta = controller.choosingSorts(control, orderType)
         print(delta)
