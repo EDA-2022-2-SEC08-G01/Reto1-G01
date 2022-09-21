@@ -22,6 +22,7 @@
 
 from atexit import register
 from pyexpat import model
+#from turtle import pd
 from wsgiref import headers
 import config as cf
 import sys
@@ -29,7 +30,7 @@ import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
-#import pandas as pd
+import pandas as pd
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
 
@@ -141,24 +142,21 @@ while True:
 
     
     elif int(inputs[0]) == 4:
-        nameAutor = input("\nIngrese el nombre del autor que desea buscar: ")
+        nameAutor = input("\nIngrese el nombre del actor que desea buscar: ")
         register, contentByAutor, delt = controller.findContentByActor(control, nameAutor)
         delta_time = delt
+        df = contentByAutor
         print(nameAutor.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
-        print("Los tres primeros, tres ultimos encontrados y su informacion son:\n " , "\n", contentByAutor["elements"])
+        print("Los tres primeros, tres ultimos encontrados y su informacion son: ")
+        print(df)
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
 
     elif int(inputs[0]) == 5:
         genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
         ans, delt = controller.findContentByGenre(control, genre)
         delta_time = delt
-        print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
-        listafinal =[]
-        for i in lt.iterator(ans[0]):
-            listafinal.append(i) 
-        for a in lt.iterator(ans[1]):
-            listafinal.append(a)
-        df = pd.DataFrame(listafinal)
+        print(f"Hay un total de {str(ans[1])} series y {str(ans[2])}  peliculas del género -{genre}-")
+        df = ans[0]
         print(tabulate(df,headers='keys',tablefmt='fancy_grid'))
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
         
@@ -169,7 +167,7 @@ while True:
         country = input("Ingrese el país que desea buscar: ")
         register, contentByCountry, delt = controller.findContentByCountry(control, country)
         delta_time = delt
-        print(register)
+        print(country.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
         print(contentByCountry)
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
     

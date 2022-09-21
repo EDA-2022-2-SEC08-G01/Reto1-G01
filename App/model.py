@@ -36,6 +36,7 @@ from DISClib.Algorithms.Sorting import mergesort as mgs
 from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
+import pandas as pd
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -164,9 +165,10 @@ def findContentByCountry(catalog, country):
             elif content["type"] == "Movie":
                 all_registers["Movies"] += 1 
     mgs.sort(sub, cmpByTitle)
+    final = manipularlista(sub)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return all_registers, sub, delta_time
+    return all_registers, final, delta_time
 
 
 def findContentByGenre(catalog, genre):
@@ -184,12 +186,14 @@ def findContentByGenre(catalog, genre):
             elif content["type"]== "Movie":
                 register_movie +=1
     mgs.sort(sub, cmpByTitle)
-    sizesub = lt.size(sub)
-    first_3 = lt.subList(sub,1, 3)
-    last_3 = lt.subList(sub,sizesub-3, 3)
+    final = manipularlista(sub)
+    
+    #sizesub = lt.size(sub)
+    #irst_3 = lt.subList(sub,1, 3)
+    #last_3 = lt.subList(sub,sizesub-3, 3)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return (first_3, last_3, register_series, register_movie), delta_time
+    return (final, register_series, register_movie), delta_time
 
 
 def findContentByActor(catalog, nameAutor):
@@ -208,9 +212,10 @@ def findContentByActor(catalog, nameAutor):
             elif content["type"] == "Movie":
                 all_registers['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
+    final = manipularlista(sub)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return all_registers, sub, delta_time
+    return all_registers, final, delta_time
                         
 
 def directorInvolved(catalog, director):
@@ -393,7 +398,18 @@ def deltaTime(start, end):
     elapsed = float(end - start)
     return elapsed
 
-
+#Función para filtar las listas y unir, y crear un dataframe
+def manipularlista(sub):
+    sizesub = lt.size(sub)
+    first_3 = lt.subList(sub,1, 3)
+    last_3 = lt.subList(sub,sizesub-3, 3)
+    listafinal =[]
+    for i in lt.iterator(first_3):
+        listafinal.append(i) 
+    for a in lt.iterator(last_3):
+        listafinal.append(a)
+    df=pd.DataFrame(listafinal)
+    return df
 #Funciones adicionales
 def Numbermonths(date):
     months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
