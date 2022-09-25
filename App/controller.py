@@ -29,7 +29,6 @@ from DISClib.Algorithms.Sorting import quicksort as qs
 import config as cf
 import model
 import csv
-import pandas as pd
 #import tabulate
 
 """
