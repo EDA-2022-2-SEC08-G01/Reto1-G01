@@ -22,6 +22,7 @@
 
 from atexit import register
 from pyexpat import model
+#from turtle import pd
 from wsgiref import headers
 import config as cf
 import sys
@@ -29,7 +30,7 @@ import controller as controller
 from DISClib.ADT import list as lt
 assert cf
 from tabulate import tabulate
-#import pandas as pd
+import pandas as pd
 default_limit = 1000
 sys.setrecursionlimit(default_limit*100)
 
@@ -126,6 +127,7 @@ while True:
         sub, ar , delt= controller.moviesInYears(control, initial_year, final_year)
         delta_time = delt
         print("Hay " + str(ar) +" películas estrenadas entre " + str(initial_year) + " y " + str(final_year))
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parámetros son: ")
         print(sub)
         print("\nPara este requerimiento, delta tiempo:", str(delta_time))
     
@@ -135,35 +137,31 @@ while True:
         sub, ar, delt = controller.TvShowsInPeriod(control, initialDate, finalDate)
         delta_time = delt
         print("Hay " + str(ar) +" series estrenadas entre " + str(initialDate) + " y " + str(finalDate))
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a los parámetros son: ")
         print(sub)
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
 
 
     
     elif int(inputs[0]) == 4:
-        nameAutor = input("\nIngrese el nombre del autor que desea buscar: ")
+        nameAutor = input("\nIngrese el nombre del actor que desea buscar: ")
         register, contentByAutor, delt = controller.findContentByActor(control, nameAutor)
         delta_time = delt
+        df = contentByAutor
         print(nameAutor.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
-        print("Los tres primeros, tres ultimos encontrados y su informacion son:\n " , "\n", contentByAutor["elements"])
+        print("Los tres primeros, tres ultimos encontrados y su informacion son: ")
+        print(df)
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
 
     elif int(inputs[0]) == 5:
         genre = input("Ingrese el nombre del género de pelicula o serie que desea buscar: ")
         ans, delt = controller.findContentByGenre(control, genre)
         delta_time = delt
-        print(f"Hay un total de {str(ans[2])} series y {str(ans[3])}  peliculas del género -{genre}-")
-        prim3 =[]
-        last3 =[]
-        for i in lt.iterator(ans[0]):
-            prim3.append(i) 
-        for a in lt.iterator(ans[1]):
-            last3.append(a)
-        df1 = pd.DataFrame(prim3)
-        df2 = pd.DataFrame(last3)
-        print(tabulate(df1,headers='keys',tablefmt='fancy_grid'))
-        print(tabulate(df2,headers='keys',tablefmt='fancy_grid'))
-
+        print(f"Hay un total de {str(ans[1])} series y {str(ans[2])}  peliculas del género -{genre}-")
+        df = ans[0]
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parámetros son: ")
+        print(df)
+        #print(tabulate(df,headers='keys',tablefmt='fancy_grid'))
         print("\n Para este requerimiento, delta tiempo:", str(delta_time))
         
 
@@ -173,9 +171,10 @@ while True:
         country = input("Ingrese el país que desea buscar: ")
         register, contentByCountry, delt = controller.findContentByCountry(control, country)
         delta_time = delt
-        print(register)
+        print(country.title(), "tiene un total de", register["TV Shows"], "TV Shows y " , register["Movies"], "Movies.")
+        print("Los tres primeros, tres ultimos encontrados de acuerdo a sus parametros son: ")
         print(contentByCountry)
-        print("\n Para este requerimiento, delta tiempo:", str(delta_time))
+        print("\n Para este requerimiento, delta tiem   po:", str(delta_time))
     
     elif int(inputs[0]) == 7:
         director = input("Ingrese el director que desea buscar: ")
@@ -183,7 +182,7 @@ while True:
         print(tr, sr, gr, sub)
 
     elif int(inputs[0]) == 8:
-        top = input("Ingrese el TOP N que desea conocer: ")
+        top = int(input("Ingrese el TOP N que desea conocer: "))
         ag = controller.topGenders(control, top)
         print(ag)
 

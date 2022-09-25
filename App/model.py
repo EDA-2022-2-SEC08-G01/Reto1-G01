@@ -25,6 +25,7 @@
  """
 
 
+from atexit import register
 from doctest import ELLIPSIS_MARKER
 from tempfile import gettempdir
 import config as cf
@@ -36,6 +37,8 @@ from DISClib.Algorithms.Sorting import mergesort as mgs
 from DISClib.Algorithms.Sorting import quicksort as qs
 assert cf
 import time 
+import copy
+import pandas as pd
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
 los mismos.
@@ -51,8 +54,8 @@ def newCatalog(structure):
         'general': None
     }
     for platform in catalog:
-        catalog[platform] = lt.newList(structure)
-        #ins.sort(catalog[platform], cmpMoviesByReleaseYear)
+        catalog[platform] = lt.newList(structure,cmpfunction = cmpID)
+        
     return catalog 
 
 
@@ -130,8 +133,9 @@ def moviesInYears(catalog, initial_year, final_year):
                 all_registers += 1
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
+    final = manipularlista(sub)
     
-    return sub, all_registers,delta_time
+    return final, all_registers,delta_time
 
 def TvShowsInPeriod(catalog, initialDate, finalDate):
     platform = catalog["general"]
@@ -148,7 +152,8 @@ def TvShowsInPeriod(catalog, initialDate, finalDate):
                 all_registers += 1
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return sub, all_registers, delta_time
+    final = manipularlista(sub)
+    return final, all_registers, delta_time
 
 def findContentByCountry(catalog, country):
     platform = catalog["general"]
@@ -164,9 +169,10 @@ def findContentByCountry(catalog, country):
             elif content["type"] == "Movie":
                 all_registers["Movies"] += 1 
     mgs.sort(sub, cmpByTitle)
+    final = manipularlista(sub)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return all_registers, sub, delta_time
+    return all_registers, final, delta_time
 
 
 def findContentByGenre(catalog, genre):
@@ -184,12 +190,14 @@ def findContentByGenre(catalog, genre):
             elif content["type"]== "Movie":
                 register_movie +=1
     mgs.sort(sub, cmpByTitle)
-    sizesub = lt.size(sub)
-    first_3 = lt.subList(sub,1, 3)
-    last_3 = lt.subList(sub,sizesub-3, 3)
+    final = manipularlista(sub)
+    
+    #sizesub = lt.size(sub)
+    #irst_3 = lt.subList(sub,1, 3)
+    #last_3 = lt.subList(sub,sizesub-3, 3)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return (first_3, last_3, register_series, register_movie), delta_time
+    return (final, register_series, register_movie), delta_time
 
 
 def findContentByActor(catalog, nameAutor):
@@ -208,9 +216,10 @@ def findContentByActor(catalog, nameAutor):
             elif content["type"] == "Movie":
                 all_registers['Movies'] += 1
     mgs.sort(sub, cmpByTitle)
+    final = manipularlista(sub)
     end_time = getTime()
     delta_time = deltaTime(start_time, end_time)
-    return all_registers, sub, delta_time
+    return all_registers, final, delta_time
                         
 
 def directorInvolved(catalog, director):
@@ -248,41 +257,87 @@ def directorInvolved(catalog, director):
     return type_registers, service_registers, genre_registers, sub, delta_time
 
 def topGenders(catalog, top):
-    n_gender = {}
-    type_registers = {"TV Shows": 0, "Movies": 0}
-    all_genders = {}
-    service_registers = {}
-    general_registers = {}
+    ans = lt.newList("ARRAY_LIST", cmpfunction=cmpGenre)
     general = catalog["general"]
+    register = {"Genre": "", "Movies": 0, "TV Shows": 0, "Netflix": 0, "Disney plus": 0, "Hulu": 0, "Amazon prime": 0, "total": 0}
     start_time = getTime()
     for content in lt.iterator(general):
-        listed = content["listed_in"].split(", ") #se separan los géneros
-        for i in listed: #se itera sobre la lista, i toma el valor de cada génerp
-            if i not in all_genders: #se añade al diccionario de géneros en caso de que no esté
-                all_genders[i] = 0
-                all_genders[i] += 1
-            else:
-                all_genders[i] += 1
-            
-        if content["type"] == "Movie":
-            type_registers["Movies"] += 1
-        elif content["type"] == "TV Show":
-            type_registers["TV Shows"] += 1
+        c = copy.deepcopy(register)
+        listed = content["listed_in"].lower().split(",")
 
-        if content["streaming_service"] not in service_registers:
-            service_registers[content["streaming_service"]] = 0
-            service_registers[content["streaming_service"]] += 1
-        else:
-            service_registers[content["streaming_service"]] += 1
         
-    end_time = getTime()
-    delta_time = deltaTime(start_time, end_time)
-    return all_genders, delta_time
+        for gender in listed:
+                gender = gender.strip()
+                        
+                c["Genre"] = gender
+                if lt.isPresent(ans, c) == 0:
+                    if content["type"] == "Movie":
+                        c["Movies"] += 1
+                    elif content["type"] == "TV Show":
+                        c["TV Shows"] += 1
+                        
+                    if content["streaming_service"].lower() == "netflix":
+                        c["Netflix"] += 1
+                    elif content["streaming_service"].lower() == "amazon_prime":
+                        c["Amazon prime"] += 1
+                    elif content["streaming_service"].lower() == "hulu":
+                        c["Hulu"] += 1
+                    elif content["streaming_service"].lower() == "disney_plus":
+                        c["Disney plus"] += 1    
+                    c["total"] += 1
+                    lt.addLast(ans, c)
+                elif lt.isPresent(ans, c) > 0:
+                    
+                    for gen in lt.iterator(ans):
+                        if gen["Genre"].lower() == gender.lower():   
+                            if content["type"] == "Movie":
+                                gen["Movies"] += 1
+                                
+                            elif content["type"] == "TV Show":
+                                gen["TV Shows"] += 1
+                            
+                            if content["streaming_service"].lower() == "netflix":
+                                gen["Netflix"] += 1
+                            elif content["streaming_service"].lower() == "amazon_prime":
+                                gen["Amazon prime"] += 1
+                            elif content["streaming_service"].lower() == "hulu":
+                                gen["Hulu"] += 1
+                            elif content["streaming_service"].lower() == "disney_plus":
+                                gen["Disney plus"] += 1
+                            gen["total"] += 1
+    mgs.sort(ans, cmpByCount) 
+    size = lt.size(ans) - 1
+    sub = lt.subList(ans, size - top, top )
+  
+    return sub
 
-def platformSize(platform):
-    return lt.size(platform)
 
-# Funciones utilizadas para comparar elementos dentro de una lista
+
+
+
+def cmpGenre(element1, element2):
+    
+    if element1["Genre"] == element2["Genre"]:
+        return 0
+    elif element1["Genre"] > element2["Genre"]:
+        return 1
+    return -1
+
+def cmpID(element1, element2):
+    
+    if element1["show_id"] == element2["show_id"]:
+        return 0
+    elif element1["show_id"] > element2["show_id"]:
+        return 1
+    return -1
+
+def cmpGenre(element1, element2):
+    
+    if element1["Genre"] == element2["Genre"]:
+        return 0
+    elif element1["Genre"] > element2["Genre"]:
+        return 1
+    return -1
 
 # funciones para comparar elementos dentro de algoritmos de ordenamientos
 
@@ -347,6 +402,15 @@ def cmpByTitle(movie1, movie2):
                 respuesta = True
     return respuesta
 
+def cmpByCount(genre1, genre2):
+    respuesta = False
+    if genre1["total"] < genre2["total"]:
+        respuesta = True
+    elif genre1["total"] == genre2["total"]:
+        if genre1["Netflix"] < genre2["Netflix"]:
+            respuesta = True
+    
+    return respuesta 
 
 def choosingSorts(catalog, orderType):
     platform = catalog["general"]
@@ -393,7 +457,18 @@ def deltaTime(start, end):
     elapsed = float(end - start)
     return elapsed
 
-
+#Función para filtar las listas y unir, y crear un dataframe
+def manipularlista(sub):
+    sizesub = lt.size(sub)
+    first_3 = lt.subList(sub,1, 3)
+    last_3 = lt.subList(sub,sizesub-3, 3)
+    listafinal =[]
+    for i in lt.iterator(first_3):
+        listafinal.append(i) 
+    for a in lt.iterator(last_3):
+        listafinal.append(a)
+    df=pd.DataFrame(listafinal)
+    return df
 #Funciones adicionales
 def Numbermonths(date):
     months = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 
